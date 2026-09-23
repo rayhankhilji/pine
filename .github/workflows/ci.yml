@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: uv sync
+        working-directory: api
+      - name: Ruff
+        run: uv run ruff check .
+        working-directory: api
+      - name: Mypy
+        run: uv run mypy pine tests
+        working-directory: api
+      - name: Pytest
+        run: uv run pytest -q
+        working-directory: api
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: web
+      - name: Lint
+        run: pnpm lint
+        working-directory: web
+      - name: Build
+        run: pnpm build
+        working-directory: web
