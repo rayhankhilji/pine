@@ -9,7 +9,7 @@ Pine is a two-app monorepo: a Python engine (`api/`) that owns ingestion, extrac
 ```mermaid
 flowchart LR
   subgraph Client
-    W[web · Next.js 15]
+    W[web · Next.js 16]
     CLI[pine CLI · typer]
   end
   subgraph Engine["api · FastAPI"]
