@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     OCR_ENABLED: bool = False
     STORAGE_DIR: str = "./storage"
     MAX_FILE_MB: int = 200
+    LOG_LEVEL: str = "INFO"
 
 
 @lru_cache
