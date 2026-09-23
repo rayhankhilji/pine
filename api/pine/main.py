@@ -1,6 +1,9 @@
+import asyncio
 import hmac
 import logging
 import uuid
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,7 +12,9 @@ from fastapi.responses import JSONResponse
 from pine import __version__
 from pine.api import health
 from pine.config import get_settings
+from pine.db import SessionLocal
 from pine.errors import error_body, register_error_handlers
+from pine.jobs.worker import Worker
 from pine.logging import configure_logging, request_id_ctx
 
 logger = logging.getLogger(__name__)
@@ -18,7 +23,23 @@ logger = logging.getLogger(__name__)
 def create_app() -> FastAPI:
     settings = get_settings()
     configure_logging(settings.LOG_LEVEL)
-    app = FastAPI(title="Pine API", version=__version__)
+
+    @asynccontextmanager
+    async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+        worker: Worker | None = None
+        task: asyncio.Task[None] | None = None
+        if settings.WORKER_ENABLED:
+            worker = Worker(
+                SessionLocal, concurrency=settings.WORKER_CONCURRENCY
+            )
+            task = asyncio.create_task(worker.run_forever())
+            logger.info("worker started (%s)", worker.worker_id)
+        yield
+        if worker is not None and task is not None:
+            worker.stop()
+            await task
+
+    app = FastAPI(title="Pine API", version=__version__, lifespan=lifespan)
 
     app.add_middleware(
         CORSMiddleware,
