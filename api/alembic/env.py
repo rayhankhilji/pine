@@ -6,6 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 from pine.config import get_settings
 from pine.db import Base
+from pine import models  # noqa: F401 — register all models for autogenerate
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
