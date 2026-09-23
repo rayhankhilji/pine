@@ -1,0 +1,60 @@
+[project]
+name = "pine"
+version = "0.1.0"
+description = "Pine API - Private Markets Intelligence Engine"
+readme = "README.md"
+authors = [
+    { name = "rayhankhilji", email = "rayhankhilji@icloud.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.20.0",
+    "fastapi>=0.141.1",
+    "httpx>=0.28.1",
+    "networkx>=3.7",
+    "numpy>=2.5.3",
+    "openai>=3.19.0",
+    "openpyxl>=3.1.5",
+    "pandas>=3.0.6",
+    "pdfplumber>=0.11.10",
+    "pydantic>=2",
+    "pydantic-settings>=2.15.0",
+    "pymupdf>=1.28.2",
+    "python-docx>=1.2.0",
+    "python-multipart>=0.0.32",
+    "python-pptx>=1.0.2",
+    "rank-bm25>=0.2.2",
+    "rapidfuzz>=3.14.6",
+    "rich>=15.0.0",
+    "sqlalchemy>=2",
+    "sse-starlette>=3.4.11",
+    "tiktoken>=0.14.0",
+    "typer>=0.27.2",
+    "uvicorn[standard]>=0.53.0",
+]
+
+[project.scripts]
+pine = "pine.cli:app"
+
+[project.optional-dependencies]
+ocr = [
+    "pillow>=12.3.0",
+    "pytesseract>=0.3.13",
+]
+
+[tool.uv.build-backend]
+module-root = ""
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.168.1",
+    "mypy>=2.3.1",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.16.8",
+]
