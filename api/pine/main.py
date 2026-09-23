@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from pine import __version__
-from pine.api import health
+from pine.api import deals, health
 from pine.config import get_settings
 from pine.db import SessionLocal
 from pine.errors import error_body, register_error_handlers
@@ -86,6 +86,7 @@ def create_app() -> FastAPI:
 
     register_error_handlers(app)
     app.include_router(health.router, prefix="/api/v1")
+    app.include_router(deals.router, prefix="/api/v1")
     return app
 
 
