@@ -1,3 +1,5 @@
+import hmac
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -25,7 +27,8 @@ def create_app() -> FastAPI:
         key = settings.PINE_API_KEY
         path = request.url.path
         protected = key and path.startswith("/api/") and not path.endswith("/health")
-        if protected and request.headers.get("X-API-Key") != key:
+        provided = request.headers.get("X-API-Key") or ""
+        if protected and not hmac.compare_digest(provided, key):
             return JSONResponse(
                 status_code=401,
                 content=error_body("UNAUTHORIZED", "Missing or invalid API key"),
