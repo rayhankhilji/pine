@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleDashed } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Badge } from "@/components/ui/badge";
@@ -110,21 +110,27 @@ function CreateDealDialog() {
             placeholder="Company name"
             {...form.register("company_name")}
           />
-          <Select
-            value={form.watch("stage")}
-            onValueChange={(v) => form.setValue("stage", v as DealStage)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Stage" />
-            </SelectTrigger>
-            <SelectContent>
-              {STAGES.map((s) => (
-                <SelectItem key={s.value} value={s.value}>
-                  {s.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Controller
+            control={form.control}
+            name="stage"
+            render={({ field }) => (
+              <Select
+                value={field.value}
+                onValueChange={(v) => field.onChange(v as DealStage)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Stage" />
+                </SelectTrigger>
+                <SelectContent>
+                  {STAGES.map((s) => (
+                    <SelectItem key={s.value} value={s.value}>
+                      {s.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
           <div className="flex gap-3">
             <Input placeholder="Currency" {...form.register("currency")} />
             <Input
