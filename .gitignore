@@ -22,7 +22,8 @@ out/
 *.local
 
 # app data
-storage/
+/storage/
+/api/storage/
 *.db
 *.db-journal
 *.sqlite3
