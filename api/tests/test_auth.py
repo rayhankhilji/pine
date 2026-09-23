@@ -13,7 +13,7 @@ def secured_client(monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
     monkeypatch.setenv("PINE_API_KEY", "test-secret")
     get_settings.cache_clear()
     app = create_app()
-    app.dependency_overrides[get_session] = lambda: iter([])
+    app.dependency_overrides.pop(get_session, None)
     client = TestClient(app)
     yield client
     client.close()

@@ -3,7 +3,7 @@ from collections.abc import Iterator
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from pine.config import get_settings
@@ -25,8 +25,15 @@ def client(monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
     Base.metadata.create_all(engine)
     testing_session = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 
+    def override_get_session() -> Iterator[Session]:
+        session = testing_session()
+        try:
+            yield session
+        finally:
+            session.close()
+
     app = create_app()
-    app.dependency_overrides[get_session] = lambda: iter(testing_session())
+    app.dependency_overrides[get_session] = override_get_session
 
     test_client = TestClient(app)
     yield test_client
