@@ -14,6 +14,7 @@ from pine.main import create_app
 @pytest.fixture
 def client(monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
     monkeypatch.delenv("PINE_API_KEY", raising=False)
+    monkeypatch.setenv("WORKER_ENABLED", "0")
     get_settings.cache_clear()
 
     engine = create_engine(

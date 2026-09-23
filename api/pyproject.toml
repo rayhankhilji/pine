@@ -30,6 +30,7 @@ dependencies = [
     "sse-starlette>=3.4.11",
     "tiktoken>=0.14.0",
     "typer>=0.27.2",
+    "uuid-utils>=1.0.0",
     "uvicorn[standard]>=0.53.0",
 ]
 
@@ -71,3 +72,6 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 strict = true
 ignore_missing_imports = true
 mypy_path = "."
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
