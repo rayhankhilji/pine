@@ -24,12 +24,12 @@ def create_app() -> FastAPI:
     async def api_key_middleware(request: Request, call_next):  # type: ignore[no-untyped-def]
         key = settings.PINE_API_KEY
         path = request.url.path
-        if key and path.startswith("/api/") and not path.endswith("/health"):
-            if request.headers.get("X-API-Key") != key:
-                return JSONResponse(
-                    status_code=401,
-                    content=error_body("UNAUTHORIZED", "Missing or invalid API key"),
-                )
+        protected = key and path.startswith("/api/") and not path.endswith("/health")
+        if protected and request.headers.get("X-API-Key") != key:
+            return JSONResponse(
+                status_code=401,
+                content=error_body("UNAUTHORIZED", "Missing or invalid API key"),
+            )
         return await call_next(request)
 
     register_error_handlers(app)
