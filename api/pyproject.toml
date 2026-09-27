@@ -73,5 +73,12 @@ strict = true
 ignore_missing_imports = true
 mypy_path = "."
 
+# PyMuPDF ships py.typed but its API is untyped wrappers over the compiled
+# _mupdf module; skipping it makes the whole module Any instead of partially
+# typed (which produces false-positive strict errors on every call).
+[[tool.mypy.overrides]]
+module = ["pymupdf", "pymupdf.*"]
+follow_imports = "skip"
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
