@@ -1,4 +1,5 @@
 from collections.abc import Iterator
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
@@ -7,7 +8,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from pine.config import get_settings
-from pine.db import Base, get_session
+from pine.db import Base, get_session, get_session_factory
 from pine.main import create_app
 
 
@@ -31,10 +32,13 @@ def session(session_factory: sessionmaker[Session]) -> Iterator[Session]:
 
 @pytest.fixture
 def client(
-    monkeypatch: pytest.MonkeyPatch, session_factory: sessionmaker[Session]
+    monkeypatch: pytest.MonkeyPatch,
+    session_factory: sessionmaker[Session],
+    tmp_path: Path,
 ) -> Iterator[TestClient]:
     monkeypatch.delenv("PINE_API_KEY", raising=False)
     monkeypatch.setenv("WORKER_ENABLED", "0")
+    monkeypatch.setenv("STORAGE_DIR", str(tmp_path / "storage"))
     get_settings.cache_clear()
 
     testing_session = session_factory
@@ -48,6 +52,7 @@ def client(
 
     app = create_app()
     app.dependency_overrides[get_session] = override_get_session
+    app.dependency_overrides[get_session_factory] = lambda: session_factory
 
     test_client = TestClient(app)
     yield test_client
