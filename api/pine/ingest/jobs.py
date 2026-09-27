@@ -11,6 +11,7 @@ from pine.ingest.classify import classify_document
 from pine.ingest.detect import detect_type
 from pine.ingest.persist import persist_result
 from pine.ingest.registry import get_parser
+from pine.ingest.types import ParseResult
 from pine.jobs.queue import enqueue
 from pine.jobs.worker import job_handler
 from pine.models.document import Blob, Block, Cell, DocStatus, Document, Page, Table
@@ -73,49 +74,59 @@ def _clear_parse_output(session: Session, document_id: str) -> None:
 
 @job_handler(JobKind.parse_document)
 def parse_document(session: Session, job: Job) -> None:
+    # txn 1 (short): mark parsing + read blob bytes, then release the write
+    # lock so concurrent writers/readers are not stalled during parsing.
     document = session.get(Document, job.payload["document_id"])
     if document is None:
         raise RuntimeError(f"document {job.payload['document_id']} not found")
     document.status = DocStatus.parsing
     document.error = None
-    session.flush()
-
     blob = session.get(Blob, document.blob_id)
     if blob is None:
         raise RuntimeError(f"blob {document.blob_id} not found")
     store = _store()
     data = store.get_bytes(blob)
+    filename = document.filename
+    deal_id = document.deal_id
+    session.commit()
 
-    ext = detect_type(document.filename, data) or document.ext
+    ext = detect_type(filename, data) or document.ext
     parser = get_parser(ext)
     if parser is None:
         document.status = DocStatus.unsupported
-        session.flush()
-        _maybe_enqueue_index(session, document.deal_id)
+        session.commit()
+        _maybe_enqueue_index(session, deal_id)
         return
 
+    # parse outside the transaction — parsers are pure CPU/IO
+    result: ParseResult | None = None
+    parse_error: Exception | None = None
     try:
-        result = parser(data, document.filename)
-        _clear_parse_output(session, document.id)
-        persist_result(session, store, document, result)
-    except Exception as exc:
-        document.status = DocStatus.failed
-        document.error = f"{type(exc).__name__}: {exc}"
-        session.flush()
-        raise
+        result = parser(data, filename)
+    except Exception as exc:  # noqa: BLE001 — recorded on the document below
+        parse_error = exc
 
+    # txn 2 (short): persist parse output and enqueue follow-ups
+    if parse_error is not None:
+        document.status = DocStatus.failed
+        document.error = f"{type(parse_error).__name__}: {parse_error}"
+        session.commit()
+        raise parse_error
+
+    assert result is not None
+    _clear_parse_output(session, document.id)
+    persist_result(session, store, document, result)
     document.ext = ext
     document.status = DocStatus.parsed
-    session.flush()
-
     enqueue(
         session,
         JobKind.classify_document,
         {"document_id": document.id},
-        deal_id=document.deal_id,
+        deal_id=deal_id,
         idempotency_key=f"classify:{document.id}",
     )
-    _maybe_enqueue_index(session, document.deal_id)
+    _maybe_enqueue_index(session, deal_id)
+    session.commit()
 
 
 @job_handler(JobKind.classify_document)
