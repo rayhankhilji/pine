@@ -68,7 +68,7 @@ def detect_type(filename: str, data: bytes) -> str | None:
 
     head = data[:4096]
     if ext == "eml" and (
-        b"\nSubject:" in head or head.startswith(("Subject:", "From:", "Date:"))
+        b"\nSubject:" in head or head.startswith((b"Subject:", b"From:", b"Date:"))
     ):
         return "eml"
     if ext in {"csv", "tsv", "txt", "md"}:
