@@ -12,18 +12,32 @@ from pine.main import create_app
 
 
 @pytest.fixture
-def client(monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
-    monkeypatch.delenv("PINE_API_KEY", raising=False)
-    monkeypatch.setenv("WORKER_ENABLED", "0")
-    get_settings.cache_clear()
-
+def session_factory() -> Iterator[sessionmaker[Session]]:
     engine = create_engine(
         "sqlite://",
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
     Base.metadata.create_all(engine)
-    testing_session = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
+    yield sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
+    engine.dispose()
+
+
+@pytest.fixture
+def session(session_factory: sessionmaker[Session]) -> Iterator[Session]:
+    with session_factory() as s:
+        yield s
+
+
+@pytest.fixture
+def client(
+    monkeypatch: pytest.MonkeyPatch, session_factory: sessionmaker[Session]
+) -> Iterator[TestClient]:
+    monkeypatch.delenv("PINE_API_KEY", raising=False)
+    monkeypatch.setenv("WORKER_ENABLED", "0")
+    get_settings.cache_clear()
+
+    testing_session = session_factory
 
     def override_get_session() -> Iterator[Session]:
         session = testing_session()
