@@ -37,13 +37,6 @@ if _is_sqlite(str(engine.url)):
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
 
-    @event.listens_for(engine, "begin")
-    def _sqlite_begin_immediate(conn: object) -> None:
-        # Deferred transactions that upgrade to writes fail instantly with
-        # SQLITE_BUSY_SNAPSHOT (busy_timeout does not apply). BEGIN IMMEDIATE
-        # acquires the write lock up front so writers queue on busy_timeout.
-        conn.exec_driver_sql("BEGIN IMMEDIATE")  # type: ignore[attr-defined]
-
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 
