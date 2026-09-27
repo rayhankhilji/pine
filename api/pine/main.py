@@ -9,6 +9,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+import pine.ingest.jobs  # noqa: F401 — registers job handlers
 from pine import __version__
 from pine.api import deals, health
 from pine.config import get_settings
