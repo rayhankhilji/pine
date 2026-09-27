@@ -1,0 +1,277 @@
+{
+  "facts": [
+    {
+      "metric": "arr",
+      "value": 12000000,
+      "unit": "currency",
+      "currency": "USD",
+      "period": {
+        "type": "quarter",
+        "start": "2025-10-01",
+        "end": "2025-12-31"
+      },
+      "source_file": "01_Northwind_SeriesB_Deck.pptx",
+      "tolerance_pct": 0.0
+    },
+    {
+      "metric": "revenue",
+      "value": 4100000,
+      "unit": "currency",
+      "currency": "USD",
+      "period": {
+        "type": "fiscal_year",
+        "start": "2024-01-01",
+        "end": "2024-12-31"
+      },
+      "source_file": "02_Financials_FY2024_FY2025.xlsx",
+      "tolerance_pct": 0.0
+    },
+    {
+      "metric": "revenue",
+      "value": 9700000,
+      "unit": "currency",
+      "currency": "USD",
+      "period": {
+        "type": "fiscal_year",
+        "start": "2025-01-01",
+        "end": "2025-12-31"
+      },
+      "source_file": "02_Financials_FY2024_FY2025.xlsx",
+      "tolerance_pct": 0.0
+    },
+    {
+      "metric": "cogs",
+      "value": 1230000,
+      "unit": "currency",
+      "currency": "USD",
+      "period": {
+        "type": "fiscal_year",
+        "start": "2024-01-01",
+        "end": "2024-12-31"
+      },
+      "source_file": "02_Financials_FY2024_FY2025.xlsx",
+      "tolerance_pct": 0.0
+    },
+    {
+      "metric": "cogs",
+      "value": 2522000,
+      "unit": "currency",
+      "currency": "USD",
+      "period": {
+        "type": "fiscal_year",
+        "start": "2025-01-01",
+        "end": "2025-12-31"
+      },
+      "source_file": "02_Financials_FY2024_FY2025.xlsx",
+      "tolerance_pct": 0.0
+    },
+    {
+      "metric": "cash_balance",
+      "value": 6200000,
+      "unit": "currency",
+      "currency": "USD",
+      "period": {
+        "type": "point",
+        "start": "2025-12-31",
+        "end": "2025-12-31"
+      },
+      "source_file": "02_Financials_FY2024_FY2025.xlsx",
+      "tolerance_pct": 0.0
+    },
+    {
+      "metric": "headcount",
+      "value": 84,
+      "unit": "count",
+      "currency": null,
+      "period": {
+        "type": "fiscal_year",
+        "start": "2025-01-01",
+        "end": "2025-12-31"
+      },
+      "source_file": "02_Financials_FY2024_FY2025.xlsx",
+      "tolerance_pct": 0.0
+    },
+    {
+      "metric": "recurring_revenue",
+      "value": 10200000,
+      "unit": "currency",
+      "currency": "USD",
+      "period": {
+        "type": "fiscal_year",
+        "start": "2025-01-01",
+        "end": "2025-12-31"
+      },
+      "source_file": "03_Customer_List.csv",
+      "tolerance_pct": 0.0
+    },
+    {
+      "metric": "bank_inflows",
+      "value": 9900000,
+      "unit": "currency",
+      "currency": "USD",
+      "period": {
+        "type": "fiscal_year",
+        "start": "2025-01-01",
+        "end": "2025-12-31"
+      },
+      "source_file": "04_Bank_Statement_2025.csv",
+      "tolerance_pct": 1.0
+    },
+    {
+      "metric": "cash_balance",
+      "value": 6200000,
+      "unit": "currency",
+      "currency": "USD",
+      "period": {
+        "type": "point",
+        "start": "2025-12-31",
+        "end": "2025-12-31"
+      },
+      "source_file": "04_Bank_Statement_2025.csv",
+      "tolerance_pct": 0.0
+    },
+    {
+      "metric": "contract_value",
+      "value": 6700000,
+      "unit": "currency",
+      "currency": "USD",
+      "period": {
+        "type": "custom",
+        "start": "2025-01-01",
+        "end": "2027-12-31"
+      },
+      "source_file": "05_Contracts/MSA_Acme_Corporation.pdf",
+      "tolerance_pct": 0.0
+    },
+    {
+      "metric": "net_burn",
+      "value": 450000,
+      "unit": "currency",
+      "currency": "USD",
+      "period": {
+        "type": "month",
+        "start": "2025-10-01",
+        "end": "2025-10-31"
+      },
+      "source_file": "07_Board_Deck_Q4_2025.pdf",
+      "tolerance_pct": 0.0
+    },
+    {
+      "metric": "runway_months",
+      "value": 14,
+      "unit": "months",
+      "currency": null,
+      "period": {
+        "type": "point",
+        "start": "2025-12-31",
+        "end": "2025-12-31"
+      },
+      "source_file": "07_Board_Deck_Q4_2025.pdf",
+      "tolerance_pct": 0.0
+    },
+    {
+      "metric": "net_revenue_retention",
+      "value": 118,
+      "unit": "percent",
+      "currency": null,
+      "period": {
+        "type": "fiscal_year",
+        "start": "2025-01-01",
+        "end": "2025-12-31"
+      },
+      "source_file": "07_Board_Deck_Q4_2025.pdf",
+      "tolerance_pct": 0.0
+    },
+    {
+      "metric": "top_customer_concentration",
+      "value": 22,
+      "unit": "percent",
+      "currency": null,
+      "period": {
+        "type": "fiscal_year",
+        "start": "2025-01-01",
+        "end": "2025-12-31"
+      },
+      "source_file": "03_Customer_List.csv",
+      "tolerance_pct": 1.0
+    },
+    {
+      "metric": "tam",
+      "value": 40000000000,
+      "unit": "currency",
+      "currency": "USD",
+      "period": {
+        "type": "fiscal_year",
+        "start": "2025-01-01",
+        "end": "2025-12-31"
+      },
+      "source_file": "01_Northwind_SeriesB_Deck.pptx",
+      "tolerance_pct": 0.0
+    }
+  ],
+  "contradictions": [
+    {
+      "rule_id": "R1",
+      "metric": "arr",
+      "expected_values": [
+        12000000,
+        9700000,
+        10200000
+      ],
+      "min_severity": "high"
+    },
+    {
+      "rule_id": "R5",
+      "metric": "fully_diluted_pct",
+      "expected_values": [
+        103.0
+      ],
+      "min_severity": "high"
+    }
+  ],
+  "entities": [
+    {
+      "type": "company",
+      "canonical_name": "Northwind",
+      "aliases": [
+        "Northwind SaaS",
+        "Northwind, Inc."
+      ]
+    },
+    {
+      "type": "customer",
+      "canonical_name": "Acme Corporation",
+      "aliases": [
+        "ACME Corporation",
+        "Acme Corp."
+      ]
+    },
+    {
+      "type": "customer",
+      "canonical_name": "Helios Logistics",
+      "aliases": []
+    },
+    {
+      "type": "customer",
+      "canonical_name": "Borealis Health",
+      "aliases": []
+    },
+    {
+      "type": "customer",
+      "canonical_name": "Delta Freight",
+      "aliases": []
+    },
+    {
+      "type": "customer",
+      "canonical_name": "Kestrel Bank",
+      "aliases": []
+    },
+    {
+      "type": "bank_account",
+      "canonical_name": "Northwind Operating Account",
+      "aliases": [
+        "ACCT 4839201156"
+      ]
+    }
+  ]
+}

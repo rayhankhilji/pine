@@ -1,0 +1,26 @@
+ACCT 4839201156
+date,description,debit,credit,balance
+2025-01-15,Customer receipts,,667598,667598
+2025-01-28,Operating disbursements,323712,,343886
+2025-02-15,Customer receipts,,797861,1141747
+2025-02-28,Operating disbursements,350940,,790807
+2025-03-15,Customer receipts,,724588,1515395
+2025-03-28,Operating disbursements,311610,,1203785
+2025-04-15,Customer receipts,,887417,2091202
+2025-04-28,Operating disbursements,360016,,1731186
+2025-05-15,Customer receipts,,838569,2569755
+2025-05-28,Operating disbursements,347914,,2221841
+2025-06-15,Customer receipts,,700164,2922005
+2025-06-28,Operating disbursements,323712,,2598293
+2025-07-15,Customer receipts,,887417,3485710
+2025-07-28,Operating disbursements,317661,,3168049
+2025-08-15,Customer receipts,,960690,4128739
+2025-08-28,Operating disbursements,275306,,3853433
+2025-09-15,Customer receipts,,903700,4757133
+2025-09-28,Operating disbursements,251103,,4506030
+2025-10-15,Customer receipts,,960690,5466720
+2025-10-28,Operating disbursements,260179,,5206541
+2025-11-15,Customer receipts,,659457,5865998
+2025-11-28,Operating disbursements,263205,,5602793
+2025-12-15,Customer receipts,,911849,6514642
+2025-12-28,Operating disbursements,314642,,6200000
