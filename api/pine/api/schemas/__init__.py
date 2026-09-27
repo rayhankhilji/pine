@@ -1,3 +1,36 @@
 from pine.api.schemas.deal import Deal, DealCreate, DealSummary, DealUpdate
+from pine.api.schemas.document import (
+    Block,
+    Cell,
+    Document,
+    DocumentDetail,
+    DocumentUpload,
+    Job,
+    Page,
+    PageSummary,
+    ReparseResponse,
+    SkippedFile,
+    Table,
+    TableDetail,
+    TableSummary,
+)
 
-__all__ = ["Deal", "DealCreate", "DealSummary", "DealUpdate"]
+__all__ = [
+    "Block",
+    "Cell",
+    "Deal",
+    "DealCreate",
+    "DealSummary",
+    "DealUpdate",
+    "Document",
+    "DocumentDetail",
+    "DocumentUpload",
+    "Job",
+    "Page",
+    "PageSummary",
+    "ReparseResponse",
+    "SkippedFile",
+    "Table",
+    "TableDetail",
+    "TableSummary",
+]
