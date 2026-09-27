@@ -106,20 +106,21 @@ class Worker:
 
     async def run_once(self) -> int:
         """One poll cycle: claim due jobs and run them to completion. Returns count run."""
-        claimed = self.claim_due_jobs()
+        # to_thread: synchronous sqlite busy-waits must never block the loop
+        claimed = await asyncio.to_thread(self.claim_due_jobs)
         if claimed:
             await asyncio.gather(*(self._execute(job_id) for job_id in claimed))
         return len(claimed)
 
     async def run_forever(self) -> None:
-        self.release_stale_locks()
+        await asyncio.to_thread(self.release_stale_locks)
         last_stale_check = _utcnow()
         while not self._stopping.is_set():
             # crashed tasks leave jobs "running"; requeue stale locks periodically
             if _utcnow() - last_stale_check > timedelta(minutes=1):
-                self.release_stale_locks()
+                await asyncio.to_thread(self.release_stale_locks)
                 last_stale_check = _utcnow()
-            claimed = self.claim_due_jobs()
+            claimed = await asyncio.to_thread(self.claim_due_jobs)
             for job_id in claimed:
                 task = asyncio.create_task(self._guarded(job_id))
                 self._tasks.add(task)
