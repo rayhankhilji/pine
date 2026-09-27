@@ -6,7 +6,9 @@
 
 **Phase 0 — Foundation: complete.** All P0 tasks done. API has health, API-key auth (`compare_digest`), error envelope, request-id + JSON logging, Alembic migrations (deal, job), a polling job worker with retries/idempotency, and deals CRUD with cursor pagination. Web has the design-token theme (light+dark), deal shell nav, placeholder routes with loading/error states, and a working deals home (list + create). OpenAPI codegen (`make generate`) feeds `web/src/lib/api/types.ts`, drift-checked in CI.
 
-**Next action: P1.T1** — models + migration for `Blob, Document, Page, Block, Table, Cell` (ARCHITECTURE §4).
+**Phase 1 — Ingestion: in progress.** P1.T1–T12 done: `Blob/Document/Page/Block/Table/Cell` models + migration, `BlobStore`, signature detection (`ingest/detect.py`), `ParseResult` dataclasses, all parsers (PDF + pdfplumber tables + scan detection, XLSX/CSV/TSV typed columns, DOCX/PPTX, EML with attachments, TXT/MD, image), tesseract OCR helpers (graceful skip), parser registry + `persist_result` (pages/blocks/tables/cells + child docs for attachments), rule-based classifier, and `parse_document`/`classify_document`/`index_deal`-stub job handlers wired into the app and `pine worker`. 66 tests green; ruff + mypy strict clean.
+
+**Next action: P1.T13** — documents/tables/jobs API endpoints + deal SSE events (ARCHITECTURE §5).
 
 ## Current Phase Checklist
 
@@ -26,11 +28,13 @@ Phase 0 — Foundation:
 
 ## Up Next
 
-Phase 1 — Ingestion & document intelligence:
-- P1.T1 — Models + migration: `Blob, Document, Page, Block, Table, Cell`
-- P1.T2 — `BlobStore` (sha256 content-addressed, `STORAGE_DIR`)
-- P1.T3 — Upload service: multipart, size/quota, zip guards, dedupe, enqueue `parse_document`
-- P1.T4 — File type detection (signature bytes + extension allowlist)
+Phase 1 — Ingestion & document intelligence (P1.T1–T12 done):
+- P1.T13 — Endpoints: documents list/detail/pages/render/file/reparse, tables detail, jobs, deal SSE events
+- P1.T14 — Demo room generator `pine demo build` → `fixtures/northwind/` + `ground_truth.json`
+- P1.T15 — `POST /demo` service
+- P1.T16 — Web: deals home "Load demo" button
+- P1.T17 — Web: documents page (dropzone, table, unreadable group, SSE)
+- P1.T18 — Web: document viewer
 
 ## Blockers
 
@@ -47,6 +51,7 @@ None.
 | 2026-09-23 | Deal cursor compares `datetime` objects, not ISO strings | SQLite stores `"YYYY-MM-DD HH:MM:SS"` — string-compare against `T`-separated ISO silently drops pages |
 | 2026-09-23 | Worker: sync handlers run via `asyncio.to_thread` inside `wait_for(timeout)`; `run_once()` drives tests without sleeps | per ARCHITECTURE §9 timeouts table |
 | 2026-09-23 | `web/openapi.json` committed alongside generated `types.ts` | drift check regenerates both deterministically |
+| 2026-09-23 | mypy `follow_imports = "skip"` for `pymupdf` | package ships `py.typed` but wraps the compiled `_mupdf` module — partial typing produced false-positive strict errors on every call; module is now `Any` |
 
 ## Session Log
 
@@ -62,6 +67,10 @@ None.
 - Web: design tokens light+dark, Inter/JetBrains Mono, deal shell nav, 12 placeholder routes with loading/error, deals home (table + create dialog + health badge).
 - `make generate` (export_openapi.py → openapi-typescript) + CI drift check; README quickstart.
 - Final: 28 api tests green, ruff/mypy clean, web lint+build clean, openapi drift clean.
+
+### 2026-09-23 — Session 3
+- Committed all outstanding P1.T1–T12 work in small commits; fixed ruff/mypy strict issues (pymupdf module skip, bytes prefix sniffing, typed test fixtures).
+- 66 api tests green, ruff + mypy strict clean.
 
 ## Completed Phases
 
