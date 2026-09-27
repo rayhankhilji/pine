@@ -35,6 +35,27 @@ def worker() -> None:
         w.stop()
 
 
+demo_app = typer.Typer(help="Demo data room commands")
+app.add_typer(demo_app, name="demo")
+
+
+@demo_app.command("build")
+def demo_build(
+    out: str = "fixtures/northwind",
+    force: bool = False,
+) -> None:
+    """Build the synthetic Northwind data room (F-14)."""
+    from pine.demo.build import build_demo
+
+    try:
+        path = build_demo(out, force=force)
+    except FileExistsError as exc:
+        console.print(f"[red]{exc}[/red]")
+        raise typer.Exit(code=1) from exc
+    n = sum(1 for p in path.rglob("*") if p.is_file())
+    console.print(f"[green]demo room built[/green] {path} ({n} files)")
+
+
 @app.command()
 def version() -> None:
     """Print the Pine version."""
