@@ -11,7 +11,9 @@ N_INGESTED = len(EXPECTED_FILES) - 1  # ground_truth.json is not ingested
 
 
 async def _drain(session_factory: sessionmaker[Session], max_rounds: int = 100) -> None:
-    worker = Worker(session_factory, concurrency=2)
+    # concurrency=1: in-memory StaticPool shares one connection across
+    # sessions; parallel workers interleave and see stale snapshots.
+    worker = Worker(session_factory, concurrency=1)
     for _ in range(max_rounds):
         if await worker.run_once() == 0:
             return
