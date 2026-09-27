@@ -58,10 +58,211 @@ export interface paths {
         patch: operations["update_deal_api_v1_deals__deal_id__patch"];
         trace?: never;
     };
+    "/api/v1/deals/{deal_id}/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Documents */
+        get: operations["list_documents_api_v1_deals__deal_id__documents_get"];
+        put?: never;
+        /** Upload Documents */
+        post: operations["upload_documents_api_v1_deals__deal_id__documents_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Document */
+        get: operations["get_document_api_v1_documents__document_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/pages/{page_no}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Page */
+        get: operations["get_page_api_v1_documents__document_id__pages__page_no__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/render/{page_no}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Render Page */
+        get: operations["render_page_api_v1_documents__document_id__render__page_no__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download File */
+        get: operations["download_file_api_v1_documents__document_id__file_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/reparse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reparse Document */
+        post: operations["reparse_document_api_v1_documents__document_id__reparse_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tables/{table_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Table */
+        get: operations["get_table_api_v1_tables__table_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/jobs/{job_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Job */
+        get: operations["get_job_api_v1_jobs__job_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/deals/{deal_id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Deal Events */
+        get: operations["deal_events_api_v1_deals__deal_id__events_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** Block */
+        Block: {
+            /** Id */
+            id: string;
+            /** Order */
+            order: number;
+            kind: components["schemas"]["BlockKind"];
+            /** Text */
+            text: string;
+            /** Bbox */
+            bbox: number[] | null;
+            /** Char Start */
+            char_start: number | null;
+            /** Char End */
+            char_end: number | null;
+        };
+        /**
+         * BlockKind
+         * @enum {string}
+         */
+        BlockKind: "heading" | "paragraph" | "list_item" | "table" | "figure" | "caption" | "header" | "footer" | "slide_note";
+        /** Body_upload_documents_api_v1_deals__deal_id__documents_post */
+        Body_upload_documents_api_v1_deals__deal_id__documents_post: {
+            /** Files */
+            files: string[];
+            /** Paths */
+            paths?: string[] | null;
+        };
+        /** Cell */
+        Cell: {
+            /** Id */
+            id: string;
+            /** Row */
+            row: number;
+            /** Col */
+            col: number;
+            /** Text */
+            text: string;
+            /** Value Num */
+            value_num: string | null;
+            /** Value Date */
+            value_date: string | null;
+            /** Bbox */
+            bbox: number[] | null;
+            /** Ref */
+            ref: string | null;
+        };
         /** Deal */
         Deal: {
             /** Id */
@@ -134,10 +335,276 @@ export interface components {
             /** Proposed Pre Money Usd */
             proposed_pre_money_usd?: number | string | null;
         };
+        /**
+         * DocStatus
+         * @enum {string}
+         */
+        DocStatus: "queued" | "parsing" | "parsed" | "failed" | "unsupported";
+        /**
+         * DocType
+         * @enum {string}
+         */
+        DocType: "deck" | "financial_statement" | "bank_statement" | "customer_list" | "contract" | "cap_table" | "board_deck" | "email" | "legal" | "other" | "unknown";
+        /** Document */
+        Document: {
+            /** Id */
+            id: string;
+            /** Deal Id */
+            deal_id: string;
+            /** Blob Id */
+            blob_id: string;
+            /** Parent Document Id */
+            parent_document_id: string | null;
+            /** Filename */
+            filename: string;
+            /** Path */
+            path: string;
+            /** Ext */
+            ext: string;
+            doc_type: components["schemas"]["DocType"];
+            status: components["schemas"]["DocStatus"];
+            /** Error */
+            error: string | null;
+            /** Page Count */
+            page_count: number;
+            /** Language */
+            language: string | null;
+            /** Doc Date */
+            doc_date: string | null;
+            /** Meta */
+            meta: {
+                [key: string]: unknown;
+            };
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** DocumentDetail */
+        DocumentDetail: {
+            /** Id */
+            id: string;
+            /** Deal Id */
+            deal_id: string;
+            /** Blob Id */
+            blob_id: string;
+            /** Parent Document Id */
+            parent_document_id: string | null;
+            /** Filename */
+            filename: string;
+            /** Path */
+            path: string;
+            /** Ext */
+            ext: string;
+            doc_type: components["schemas"]["DocType"];
+            status: components["schemas"]["DocStatus"];
+            /** Error */
+            error: string | null;
+            /** Page Count */
+            page_count: number;
+            /** Language */
+            language: string | null;
+            /** Doc Date */
+            doc_date: string | null;
+            /** Meta */
+            meta: {
+                [key: string]: unknown;
+            };
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Pages */
+            pages: components["schemas"]["PageSummary"][];
+            /** Tables */
+            tables: components["schemas"]["TableSummary"][];
+        };
+        /** DocumentUpload */
+        DocumentUpload: {
+            /** Documents */
+            documents: components["schemas"]["Document"][];
+            /** Skipped */
+            skipped: components["schemas"]["SkippedFile"][];
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** Job */
+        Job: {
+            /** Id */
+            id: string;
+            /** Deal Id */
+            deal_id: string | null;
+            kind: components["schemas"]["JobKind"];
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            };
+            status: components["schemas"]["JobStatus"];
+            /** Attempts */
+            attempts: number;
+            /** Max Attempts */
+            max_attempts: number;
+            /**
+             * Run After
+             * Format: date-time
+             */
+            run_after: string;
+            /** Error */
+            error: string | null;
+            /** Idempotency Key */
+            idempotency_key: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /**
+         * JobKind
+         * @enum {string}
+         */
+        JobKind: "parse_document" | "classify_document" | "index_deal" | "extract_facts" | "build_graph" | "detect_contradictions" | "run_pipeline" | "generate_output";
+        /**
+         * JobStatus
+         * @enum {string}
+         */
+        JobStatus: "queued" | "running" | "succeeded" | "failed" | "cancelled";
+        /** Page */
+        Page: {
+            /** Page No */
+            page_no: number;
+            /** Width */
+            width: number;
+            /** Height */
+            height: number;
+            /** Is Scanned */
+            is_scanned: boolean;
+            /** Sheet Name */
+            sheet_name: string | null;
+            /** Text */
+            text: string;
+            /** Blocks */
+            blocks: components["schemas"]["Block"][];
+            /** Tables */
+            tables: components["schemas"]["Table"][];
+        };
+        /** PageSummary */
+        PageSummary: {
+            /** Page No */
+            page_no: number;
+            /** Width */
+            width: number;
+            /** Height */
+            height: number;
+            /** Is Scanned */
+            is_scanned: boolean;
+            /** Sheet Name */
+            sheet_name: string | null;
+        };
+        /** ReparseResponse */
+        ReparseResponse: {
+            /** Job Id */
+            job_id: string;
+        };
+        /** SkippedFile */
+        SkippedFile: {
+            /** Filename */
+            filename: string;
+            /** Reason */
+            reason: string;
+        };
+        /** Table */
+        Table: {
+            /** Id */
+            id: string;
+            /** Page Id */
+            page_id: string;
+            /** Block Id */
+            block_id: string | null;
+            /** Order */
+            order: number;
+            /** N Rows */
+            n_rows: number;
+            /** N Cols */
+            n_cols: number;
+            /** Header Row */
+            header_row: number | null;
+            /** Sheet Name */
+            sheet_name: string | null;
+            /** Column Types */
+            column_types: string[];
+            /** Bbox */
+            bbox: number[] | null;
+            /** Title */
+            title: string | null;
+        };
+        /** TableDetail */
+        TableDetail: {
+            /** Id */
+            id: string;
+            /** Page Id */
+            page_id: string;
+            /** Block Id */
+            block_id: string | null;
+            /** Order */
+            order: number;
+            /** N Rows */
+            n_rows: number;
+            /** N Cols */
+            n_cols: number;
+            /** Header Row */
+            header_row: number | null;
+            /** Sheet Name */
+            sheet_name: string | null;
+            /** Column Types */
+            column_types: string[];
+            /** Bbox */
+            bbox: number[] | null;
+            /** Title */
+            title: string | null;
+            /** Cells */
+            cells: (components["schemas"]["Cell"] | null)[][];
+        };
+        /** TableSummary */
+        TableSummary: {
+            /** Id */
+            id: string;
+            /** Page No */
+            page_no: number;
+            /** Order */
+            order: number;
+            /** N Rows */
+            n_rows: number;
+            /** N Cols */
+            n_cols: number;
+            /** Header Row */
+            header_row: number | null;
+            /** Sheet Name */
+            sheet_name: string | null;
+            /** Column Types */
+            column_types: string[];
+            /** Title */
+            title: string | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -332,6 +799,331 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Deal"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_documents_api_v1_deals__deal_id__documents_get: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["DocStatus"] | null;
+                doc_type?: components["schemas"]["DocType"] | null;
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                deal_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upload_documents_api_v1_deals__deal_id__documents_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_upload_documents_api_v1_deals__deal_id__documents_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentUpload"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_document_api_v1_documents__document_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_page_api_v1_documents__document_id__pages__page_no__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+                page_no: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    render_page_api_v1_documents__document_id__render__page_no__get: {
+        parameters: {
+            query?: {
+                scale?: number;
+            };
+            header?: never;
+            path: {
+                document_id: string;
+                page_no: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    download_file_api_v1_documents__document_id__file_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reparse_document_api_v1_documents__document_id__reparse_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReparseResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_table_api_v1_tables__table_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                table_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TableDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_job_api_v1_jobs__job_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                job_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Job"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    deal_events_api_v1_deals__deal_id__events_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */

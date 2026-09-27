@@ -253,10 +253,717 @@
           }
         }
       }
+    },
+    "/api/v1/deals/{deal_id}/documents": {
+      "post": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Upload Documents",
+        "operationId": "upload_documents_api_v1_deals__deal_id__documents_post",
+        "parameters": [
+          {
+            "name": "deal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Deal Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_documents_api_v1_deals__deal_id__documents_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentUpload"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "List Documents",
+        "operationId": "list_documents_api_v1_deals__deal_id__documents_get",
+        "parameters": [
+          {
+            "name": "deal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Deal Id"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/DocStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "doc_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/DocType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Doc Type"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response List Documents Api V1 Deals  Deal Id  Documents Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{document_id}": {
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Get Document",
+        "operationId": "get_document_api_v1_documents__document_id__get",
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{document_id}/pages/{page_no}": {
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Get Page",
+        "operationId": "get_page_api_v1_documents__document_id__pages__page_no__get",
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Document Id"
+            }
+          },
+          {
+            "name": "page_no",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Page No"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{document_id}/render/{page_no}": {
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Render Page",
+        "operationId": "render_page_api_v1_documents__document_id__render__page_no__get",
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Document Id"
+            }
+          },
+          {
+            "name": "page_no",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Page No"
+            }
+          },
+          {
+            "name": "scale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 6.0,
+              "exclusiveMinimum": 0.1,
+              "default": 1.5,
+              "title": "Scale"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{document_id}/file": {
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Download File",
+        "operationId": "download_file_api_v1_documents__document_id__file_get",
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{document_id}/reparse": {
+      "post": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Reparse Document",
+        "operationId": "reparse_document_api_v1_documents__document_id__reparse_post",
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReparseResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tables/{table_id}": {
+      "get": {
+        "tags": [
+          "tables"
+        ],
+        "summary": "Get Table",
+        "operationId": "get_table_api_v1_tables__table_id__get",
+        "parameters": [
+          {
+            "name": "table_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Table Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TableDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/{job_id}": {
+      "get": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Get Job",
+        "operationId": "get_job_api_v1_jobs__job_id__get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deals/{deal_id}/events": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Deal Events",
+        "operationId": "deal_events_api_v1_deals__deal_id__events_get",
+        "parameters": [
+          {
+            "name": "deal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Deal Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "Block": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "order": {
+            "type": "integer",
+            "title": "Order"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/BlockKind"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "bbox": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bbox"
+          },
+          "char_start": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Char Start"
+          },
+          "char_end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Char End"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "order",
+          "kind",
+          "text",
+          "bbox",
+          "char_start",
+          "char_end"
+        ],
+        "title": "Block"
+      },
+      "BlockKind": {
+        "type": "string",
+        "enum": [
+          "heading",
+          "paragraph",
+          "list_item",
+          "table",
+          "figure",
+          "caption",
+          "header",
+          "footer",
+          "slide_note"
+        ],
+        "title": "BlockKind"
+      },
+      "Body_upload_documents_api_v1_deals__deal_id__documents_post": {
+        "properties": {
+          "files": {
+            "items": {
+              "type": "string",
+              "contentMediaType": "application/octet-stream"
+            },
+            "type": "array",
+            "title": "Files"
+          },
+          "paths": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paths"
+          }
+        },
+        "type": "object",
+        "required": [
+          "files"
+        ],
+        "title": "Body_upload_documents_api_v1_deals__deal_id__documents_post"
+      },
+      "Cell": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "row": {
+            "type": "integer",
+            "title": "Row"
+          },
+          "col": {
+            "type": "integer",
+            "title": "Col"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "value_num": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value Num"
+          },
+          "value_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value Date"
+          },
+          "bbox": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bbox"
+          },
+          "ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ref"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "row",
+          "col",
+          "text",
+          "value_num",
+          "value_date",
+          "bbox",
+          "ref"
+        ],
+        "title": "Cell"
+      },
       "Deal": {
         "properties": {
           "id": {
@@ -512,6 +1219,310 @@
         "type": "object",
         "title": "DealUpdate"
       },
+      "DocStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "parsing",
+          "parsed",
+          "failed",
+          "unsupported"
+        ],
+        "title": "DocStatus"
+      },
+      "DocType": {
+        "type": "string",
+        "enum": [
+          "deck",
+          "financial_statement",
+          "bank_statement",
+          "customer_list",
+          "contract",
+          "cap_table",
+          "board_deck",
+          "email",
+          "legal",
+          "other",
+          "unknown"
+        ],
+        "title": "DocType"
+      },
+      "Document": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "deal_id": {
+            "type": "string",
+            "title": "Deal Id"
+          },
+          "blob_id": {
+            "type": "string",
+            "title": "Blob Id"
+          },
+          "parent_document_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Document Id"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "ext": {
+            "type": "string",
+            "title": "Ext"
+          },
+          "doc_type": {
+            "$ref": "#/components/schemas/DocType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DocStatus"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "page_count": {
+            "type": "integer",
+            "title": "Page Count"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language"
+          },
+          "doc_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Doc Date"
+          },
+          "meta": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Meta"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "deal_id",
+          "blob_id",
+          "parent_document_id",
+          "filename",
+          "path",
+          "ext",
+          "doc_type",
+          "status",
+          "error",
+          "page_count",
+          "language",
+          "doc_date",
+          "meta",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "Document"
+      },
+      "DocumentDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "deal_id": {
+            "type": "string",
+            "title": "Deal Id"
+          },
+          "blob_id": {
+            "type": "string",
+            "title": "Blob Id"
+          },
+          "parent_document_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Document Id"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "ext": {
+            "type": "string",
+            "title": "Ext"
+          },
+          "doc_type": {
+            "$ref": "#/components/schemas/DocType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DocStatus"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "page_count": {
+            "type": "integer",
+            "title": "Page Count"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language"
+          },
+          "doc_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Doc Date"
+          },
+          "meta": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Meta"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "pages": {
+            "items": {
+              "$ref": "#/components/schemas/PageSummary"
+            },
+            "type": "array",
+            "title": "Pages"
+          },
+          "tables": {
+            "items": {
+              "$ref": "#/components/schemas/TableSummary"
+            },
+            "type": "array",
+            "title": "Tables"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "deal_id",
+          "blob_id",
+          "parent_document_id",
+          "filename",
+          "path",
+          "ext",
+          "doc_type",
+          "status",
+          "error",
+          "page_count",
+          "language",
+          "doc_date",
+          "meta",
+          "created_at",
+          "updated_at",
+          "pages",
+          "tables"
+        ],
+        "title": "DocumentDetail"
+      },
+      "DocumentUpload": {
+        "properties": {
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/Document"
+            },
+            "type": "array",
+            "title": "Documents"
+          },
+          "skipped": {
+            "items": {
+              "$ref": "#/components/schemas/SkippedFile"
+            },
+            "type": "array",
+            "title": "Skipped"
+          }
+        },
+        "type": "object",
+        "required": [
+          "documents",
+          "skipped"
+        ],
+        "title": "DocumentUpload"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -524,6 +1535,557 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "Job": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "deal_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deal Id"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/JobKind"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Payload"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "attempts": {
+            "type": "integer",
+            "title": "Attempts"
+          },
+          "max_attempts": {
+            "type": "integer",
+            "title": "Max Attempts"
+          },
+          "run_after": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Run After"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "idempotency_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Idempotency Key"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "deal_id",
+          "kind",
+          "payload",
+          "status",
+          "attempts",
+          "max_attempts",
+          "run_after",
+          "error",
+          "idempotency_key",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "Job"
+      },
+      "JobKind": {
+        "type": "string",
+        "enum": [
+          "parse_document",
+          "classify_document",
+          "index_deal",
+          "extract_facts",
+          "build_graph",
+          "detect_contradictions",
+          "run_pipeline",
+          "generate_output"
+        ],
+        "title": "JobKind"
+      },
+      "JobStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "running",
+          "succeeded",
+          "failed",
+          "cancelled"
+        ],
+        "title": "JobStatus"
+      },
+      "Page": {
+        "properties": {
+          "page_no": {
+            "type": "integer",
+            "title": "Page No"
+          },
+          "width": {
+            "type": "number",
+            "title": "Width"
+          },
+          "height": {
+            "type": "number",
+            "title": "Height"
+          },
+          "is_scanned": {
+            "type": "boolean",
+            "title": "Is Scanned"
+          },
+          "sheet_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sheet Name"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "blocks": {
+            "items": {
+              "$ref": "#/components/schemas/Block"
+            },
+            "type": "array",
+            "title": "Blocks"
+          },
+          "tables": {
+            "items": {
+              "$ref": "#/components/schemas/Table"
+            },
+            "type": "array",
+            "title": "Tables"
+          }
+        },
+        "type": "object",
+        "required": [
+          "page_no",
+          "width",
+          "height",
+          "is_scanned",
+          "sheet_name",
+          "text",
+          "blocks",
+          "tables"
+        ],
+        "title": "Page"
+      },
+      "PageSummary": {
+        "properties": {
+          "page_no": {
+            "type": "integer",
+            "title": "Page No"
+          },
+          "width": {
+            "type": "number",
+            "title": "Width"
+          },
+          "height": {
+            "type": "number",
+            "title": "Height"
+          },
+          "is_scanned": {
+            "type": "boolean",
+            "title": "Is Scanned"
+          },
+          "sheet_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sheet Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "page_no",
+          "width",
+          "height",
+          "is_scanned",
+          "sheet_name"
+        ],
+        "title": "PageSummary"
+      },
+      "ReparseResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id"
+        ],
+        "title": "ReparseResponse"
+      },
+      "SkippedFile": {
+        "properties": {
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "filename",
+          "reason"
+        ],
+        "title": "SkippedFile"
+      },
+      "Table": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "page_id": {
+            "type": "string",
+            "title": "Page Id"
+          },
+          "block_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Block Id"
+          },
+          "order": {
+            "type": "integer",
+            "title": "Order"
+          },
+          "n_rows": {
+            "type": "integer",
+            "title": "N Rows"
+          },
+          "n_cols": {
+            "type": "integer",
+            "title": "N Cols"
+          },
+          "header_row": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Header Row"
+          },
+          "sheet_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sheet Name"
+          },
+          "column_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Column Types"
+          },
+          "bbox": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bbox"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "page_id",
+          "block_id",
+          "order",
+          "n_rows",
+          "n_cols",
+          "header_row",
+          "sheet_name",
+          "column_types",
+          "bbox",
+          "title"
+        ],
+        "title": "Table"
+      },
+      "TableDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "page_id": {
+            "type": "string",
+            "title": "Page Id"
+          },
+          "block_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Block Id"
+          },
+          "order": {
+            "type": "integer",
+            "title": "Order"
+          },
+          "n_rows": {
+            "type": "integer",
+            "title": "N Rows"
+          },
+          "n_cols": {
+            "type": "integer",
+            "title": "N Cols"
+          },
+          "header_row": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Header Row"
+          },
+          "sheet_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sheet Name"
+          },
+          "column_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Column Types"
+          },
+          "bbox": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bbox"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "cells": {
+            "items": {
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/Cell"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "title": "Cells"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "page_id",
+          "block_id",
+          "order",
+          "n_rows",
+          "n_cols",
+          "header_row",
+          "sheet_name",
+          "column_types",
+          "bbox",
+          "title",
+          "cells"
+        ],
+        "title": "TableDetail"
+      },
+      "TableSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "page_no": {
+            "type": "integer",
+            "title": "Page No"
+          },
+          "order": {
+            "type": "integer",
+            "title": "Order"
+          },
+          "n_rows": {
+            "type": "integer",
+            "title": "N Rows"
+          },
+          "n_cols": {
+            "type": "integer",
+            "title": "N Cols"
+          },
+          "header_row": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Header Row"
+          },
+          "sheet_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sheet Name"
+          },
+          "column_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Column Types"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "page_no",
+          "order",
+          "n_rows",
+          "n_cols",
+          "header_row",
+          "sheet_name",
+          "column_types",
+          "title"
+        ],
+        "title": "TableSummary"
       },
       "ValidationError": {
         "properties": {
