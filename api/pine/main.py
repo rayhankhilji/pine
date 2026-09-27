@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse
 
 import pine.ingest.jobs  # noqa: F401 — registers job handlers
 from pine import __version__
-from pine.api import deals, health
+from pine.api import deals, documents, events, health, jobs, tables
 from pine.config import get_settings
 from pine.db import SessionLocal
 from pine.errors import error_body, register_error_handlers
@@ -88,6 +88,10 @@ def create_app() -> FastAPI:
     register_error_handlers(app)
     app.include_router(health.router, prefix="/api/v1")
     app.include_router(deals.router, prefix="/api/v1")
+    app.include_router(documents.router, prefix="/api/v1")
+    app.include_router(tables.router, prefix="/api/v1")
+    app.include_router(jobs.router, prefix="/api/v1")
+    app.include_router(events.router, prefix="/api/v1")
     return app
 
 

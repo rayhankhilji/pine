@@ -20,3 +20,8 @@ def get_session() -> Iterator[Session]:
         yield session
     finally:
         session.close()
+
+
+def get_session_factory() -> sessionmaker[Session]:
+    """Dependency for long-lived consumers (SSE) that open their own sessions."""
+    return SessionLocal
