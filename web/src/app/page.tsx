@@ -1,8 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleDashed } from "lucide-react";
+import { CircleDashed, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -38,6 +39,7 @@ import {
   useCreateDeal,
   useDeals,
   useHealth,
+  useLoadDemo,
   type DealStage,
 } from "@/lib/api/hooks";
 
@@ -153,6 +155,34 @@ function CreateDealDialog() {
   );
 }
 
+function LoadDemoButton() {
+  const router = useRouter();
+  const loadDemo = useLoadDemo();
+
+  const onClick = () => {
+    loadDemo.mutate(undefined, {
+      onSuccess: (data) => router.push(`/deals/${data.deal_id}/documents`),
+    });
+  };
+
+  return (
+    <div className="flex flex-col items-end gap-1">
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={onClick}
+        disabled={loadDemo.isPending}
+      >
+        {loadDemo.isPending && <Loader2 className="size-4 animate-spin" />}
+        {loadDemo.isPending ? "Loading demo…" : "Load demo"}
+      </Button>
+      {loadDemo.isError && (
+        <p className="text-xs text-destructive">{loadDemo.error.message}</p>
+      )}
+    </div>
+  );
+}
+
 export default function Home() {
   const deals = useDeals();
 
@@ -161,10 +191,8 @@ export default function Home() {
       <div className="flex items-center gap-3">
         <h1 className="text-2xl font-semibold tracking-tight">Pine</h1>
         <ApiStatusBadge />
-        <div className="ml-auto flex gap-2">
-          <Button variant="secondary" size="sm" disabled>
-            Load demo
-          </Button>
+        <div className="ml-auto flex items-start gap-2">
+          <LoadDemoButton />
           <CreateDealDialog />
         </div>
       </div>
