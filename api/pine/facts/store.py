@@ -17,6 +17,7 @@ already-attached row is linked to a second target, a copy is created so that
 each Evidence row keeps exactly one target.
 """
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal
@@ -193,7 +194,7 @@ class EvidenceStore:
 
     def _attach_evidence(
         self,
-        items: list[EvidenceItem],
+        items: Sequence[EvidenceItem],
         target_kind: EvidenceTarget,
         target_id: str,
     ) -> list[Evidence]:
@@ -234,7 +235,7 @@ class EvidenceStore:
         source_kind: DocType | str,
         extraction_method: ExtractionMethod | str,
         confidence: float = 1.0,
-        evidence: list[EvidenceItem] | None = None,
+        evidence: Sequence[EvidenceItem] | None = None,
         fact_links: list[tuple[str, str]] | None = None,
         notes: str | None = None,
     ) -> Fact:
@@ -284,7 +285,7 @@ class EvidenceStore:
         canonical_name: str,
         attrs: dict[str, Any] | None = None,
         confidence: float = 1.0,
-        evidence: list[EvidenceItem] | None = None,
+        evidence: Sequence[EvidenceItem] | None = None,
         source_document_id: str | None = None,
     ) -> Entity:
         """Create an entity, or return the existing exact normalised match.
@@ -363,7 +364,7 @@ class EvidenceStore:
         target_entity_id: str,
         attrs: dict[str, Any] | None = None,
         confidence: float = 1.0,
-        evidence: list[EvidenceItem] | None = None,
+        evidence: Sequence[EvidenceItem] | None = None,
     ) -> Relation:
         evidence = evidence or []
         if not evidence:
