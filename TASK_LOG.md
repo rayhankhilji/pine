@@ -8,7 +8,7 @@
 
 **Phase 1 — Ingestion: complete.** All P1 tasks done: full upload/document/table/job/SSE API surface (ARCHITECTURE §5), deterministic Northwind demo room + `POST /demo` (202, 409 on concurrent ingest), web home "Load demo" → documents page (dropzone, zip expansion, status pills, unreadable group, live SSE) and document viewer (rendered pages, thumbnails, text panel, spreadsheet tables, `?page=` deep links). Live check: `POST /api/v1/demo` ingested 19 documents → all `parsed` in ~5 s; 19 parse + 19 classify + 1 index job succeeded. 99 api tests green; ruff + mypy strict clean; web lint + build clean; Playwright e2e specs + CI `e2e` job added.
 
-**Next action: P2.T1** — `Chunk` model + migration; structure-aware chunker (ARCHITECTURE §6, F-03.AC4).
+**Next action: P2.T2** — `Embedder` protocol, `HashEmbedder`, `OpenAIEmbedder`, float32 vector storage.
 
 ## Current Phase Checklist
 
@@ -29,7 +29,7 @@ Phase 0 — Foundation:
 ## Up Next
 
 Phase 2 — Retrieval (F-03):
-- P2.T1 — `Chunk` model + migration; structure-aware chunker
+- [x] P2.T1 — `Chunk` model + migration `d4d47b54c38d`; `pine/index/chunker.py` (o200k_base, 400/800/60 prose, ≤25-row table groups with header repeat, slide/email kinds) · tests/index/test_chunker.py (8 tests)
 - P2.T2 — `Embedder` protocol, `HashEmbedder`, `OpenAIEmbedder`
 - P2.T3 — `index_deal` job: chunk + embed; index status lifecycle
 - P2.T4 — BM25 + dense search, RRF fusion, filters
