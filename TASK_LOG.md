@@ -8,7 +8,7 @@
 
 **Phase 1 — Ingestion: complete.** All P1 tasks done: full upload/document/table/job/SSE API surface (ARCHITECTURE §5), deterministic Northwind demo room + `POST /demo` (202, 409 on concurrent ingest), web home "Load demo" → documents page (dropzone, zip expansion, status pills, unreadable group, live SSE) and document viewer (rendered pages, thumbnails, text panel, spreadsheet tables, `?page=` deep links). Live check: `POST /api/v1/demo` ingested 19 documents → all `parsed` in ~5 s; 19 parse + 19 classify + 1 index job succeeded. 99 api tests green; ruff + mypy strict clean; web lint + build clean; Playwright e2e specs + CI `e2e` job added.
 
-**Next action: P2.T6** — `POST /deals/{id}/search` + `POST/GET /deals/{id}/index` endpoints and schemas.
+**Next action: P2.T7** — web search page + index status/reindex on documents page.
 
 ## Current Phase Checklist
 
@@ -34,7 +34,7 @@ Phase 2 — Retrieval (F-03):
 - [x] P2.T3 — real `index_deal` handler in `pine/index/jobs.py` (stub removed), `pine/index/status.py` (empty/indexing/stale/ready via `meta["indexed"]` stamp); reparse clears stamp · tests/index/test_index_job.py (3 tests)
 - [x] P2.T4 — `pine/index/retrieval.py` (BM25Okapi + float32 cosine matrix, per-deal caches keyed `(deal_id, chunk_count)`, RRF k=60 top-50×2, hard filters) · tests/index/test_retrieval.py (9 tests incl. AC1/AC2)
 - [x] P2.T5 — `pine/index/rerank.py` (NoReranker, LLMReranker listwise ≤25 candidates `{ranking:[int]}`, CrossEncoderReranker lazy-import w/ fallback), minimal `pine/llm/` (base protocol, FakeLLM rerank script, OpenAILLM structured outputs, `get_llm`/`model_for`) · tests/index/test_rerank.py (9 tests)
-- P2.T6 — `POST /deals/{id}/search`, `POST/GET /deals/{id}/index` endpoints
+- [x] P2.T6 — `pine/api/search.py` + `pine/api/schemas/search.py` (SearchRequest/SearchHit/IndexStatus), POST index → 202 {job_id}, OpenAPI types regenerated · tests/api/test_search.py (8 tests)
 - P2.T7 — Web: search page + index status/reindex on documents page
 
 ## Blockers
