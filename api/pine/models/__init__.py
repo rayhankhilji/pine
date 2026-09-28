@@ -15,6 +15,7 @@ from pine.models.entity import Entity, EntityAlias, Relation
 from pine.models.evidence import Evidence, EvidenceTarget
 from pine.models.fact import ExtractionMethod, Fact, FactLink
 from pine.models.job import Job, JobKind, JobStatus
+from pine.models.llm_call import LLMCall
 
 __all__ = [
     "Blob",
@@ -38,6 +39,7 @@ __all__ = [
     "Job",
     "JobKind",
     "JobStatus",
+    "LLMCall",
     "Page",
     "Relation",
     "Table",
