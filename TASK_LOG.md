@@ -10,9 +10,9 @@
 
 **Phase 2 — Retrieval: complete.** All P2 tasks done: `Chunk` model + structure-aware chunker (400/800/60 prose overlap, ≤25-row table groups with header repeat, slide/email kinds), HashEmbedder (256-d deterministic sha256) + OpenAIEmbedder (batch-100/retry/fallback), real `index_deal` job, index status (empty/indexing/stale/ready), hybrid BM25 + dense cosine with RRF(k=60) and hard filters, rerankers (none/llm/cross-encoder lazy), `POST /deals/{id}/search` + `POST|GET /deals/{id}/index`, web search page (query/k/doc-type chips, highlighted hits → document viewer deep links), index pill + Reindex on documents page, e2e spec. Live check: `POST /demo` → 39 chunks indexed (`ready`); `"annual recurring revenue"` returns `email_02.eml`, `MSA_Delta_Freight.pdf`, `02_Financials_FY2024_FY2025.xlsx` top-3. 145 api tests green; ruff + mypy strict clean; web lint + build clean; Playwright search spec green.
 
-**Phase 3 — Facts & knowledge graph: in progress.** P3.T1 (Evidence/Entity/EntityAlias/Relation/Fact/FactLink models + migration `21768d57a624`, MetricId/Unit/PeriodType vocabularies), P3.T2 (`EvidenceStore` — sole writer of Fact/Entity/Relation rows; quote substring validation `EvidenceInvalid`, `EvidenceRequired` invariants, evidence stubs + `link_evidence` copy-on-retarget, entity/alias and relation dedupe), P3.T3 (`pine/facts/periods.py` — PeriodSpec parsing for FY/quarter/month/TTM/as-of labels, fiscal-calendar-aware bounds via `deal.fiscal_year_end_month`, `comparable()` overlap rules, hypothesis round-trips) and P3.T4 (deterministic table extractors: P&L/balance sheet, bank statement monthly+FY `bank_inflows` and closing `cash_balance` + `bank_account` entity, customer list → Customer entities + `has_customer` edges + aggregates, cap table → Shareholder/SecurityClass + `owns_shares` + `shares_outstanding`; ordered registry `run_extractors`; cell-level evidence on every fact) done. 62 facts tests green incl. F-05.AC1 demo check.
+**Phase 3 — Facts & knowledge graph: in progress.** P3.T1 (Evidence/Entity/EntityAlias/Relation/Fact/FactLink models + migration `21768d57a624`, MetricId/Unit/PeriodType vocabularies), P3.T2 (`EvidenceStore` — sole writer of Fact/Entity/Relation rows; quote substring validation `EvidenceInvalid`, `EvidenceRequired` invariants, evidence stubs + `link_evidence` copy-on-retarget, entity/alias and relation dedupe), P3.T3 (`pine/facts/periods.py` — PeriodSpec parsing for FY/quarter/month/TTM/as-of labels, fiscal-calendar-aware bounds via `deal.fiscal_year_end_month`, `comparable()` overlap rules, hypothesis round-trips), P3.T4 (deterministic table extractors: P&L/balance sheet, bank statement monthly+FY `bank_inflows` and closing `cash_balance` + `bank_account` entity, customer list → Customer entities + `has_customer` edges + aggregates, cap table → Shareholder/SecurityClass + `owns_shares` + `shares_outstanding`; ordered registry `run_extractors`; cell-level evidence on every fact), P3.T5 (`LLMCall` model + migration, recorded/hash-cached call wrapper, FakeLLM scripted YAML + deterministic extract fallback, OpenAILLM structured outputs, LLM extraction tests + shared `tests/facts/conftest.py` fixtures), P3.T6 (`pine/facts/llm_extract.py` — prose-chunk LLM extraction with verbatim `evidence_quote` substring check, `EVIDENCE_MISMATCH` rejection, dedupe), P3.T7 (`pine/facts/derive.py` — runway, gross margin, concentration, NRR as `derived` facts with `FactLink` lineage) and P3.T8 (`pine/graph/` — `resolve.py` alias-hit + fuzzy token_set ≥ 92 merges repointing facts/relations/evidence/aliases, `extract.py` contract counterparty + email person entities, `build.py` orchestrator, `export.py` JSON/GraphML) done. 7 graph tests green incl. F-04.AC1/AC2 demo-room checks.
 
-**Next action: P3.T5** — see ROADMAP Phase 3.
+**Next action: P3.T9** — see ROADMAP Phase 3.
 
 ## Current Phase Checklist
 
@@ -22,10 +22,10 @@ Phase 3 — Facts & knowledge graph (F-04, F-05):
 - [x] P3.T2 — `EvidenceStore` + invariants · tests/facts/test_invariants.py (17 tests)
 - [x] P3.T3 — `pine/facts/periods.py` PeriodSpec parsing + comparability · tests/facts/test_periods.py
 - [x] P3.T4 — Table extractors (pnl, bank_statement, customer_list, cap_table) + registry · tests/facts/test_table_extractors.py (7 tests)
-- [ ] P3.T5 — `pine/llm/` tools/StructuredResult/LLMCall + FakeLLM YAML scripts
-- [ ] P3.T6 — LLM prose extraction
-- [ ] P3.T7 — Derived facts
-- [ ] P3.T8 — `pine/graph/` resolve/extract/build/export
+- [x] P3.T5 — `pine/llm/` tools/StructuredResult/LLMCall + FakeLLM YAML scripts
+- [x] P3.T6 — LLM prose extraction
+- [x] P3.T7 — Derived facts
+- [x] P3.T8 — `pine/graph/` resolve/extract/build/export · tests/graph (7 tests)
 - [ ] P3.T9 — Facts + graph endpoints
 - [ ] P3.T10 — Job chain extract_facts → build_graph → detect_contradictions
 - [ ] P3.T11 — Web facts page
