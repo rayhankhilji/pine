@@ -1,6 +1,12 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type InfiniteData,
+} from "@tanstack/react-query";
 
 import { api, ApiError } from "./client";
 import type { components } from "./types";
@@ -25,6 +31,22 @@ export type SearchHit = components["schemas"]["SearchHit"];
 export type SearchRequest = components["schemas"]["SearchRequest"];
 export type SearchFilters = components["schemas"]["SearchFilters"];
 export type SearchResponse = components["schemas"]["SearchResponse"];
+export type Fact = components["schemas"]["Fact"];
+export type FactDetail = components["schemas"]["FactDetail"];
+export type FactPage = components["schemas"]["FactPage"];
+export type FactPatch = components["schemas"]["FactPatch"];
+export type Evidence = components["schemas"]["Evidence"];
+export type Unit = components["schemas"]["Unit"];
+export type PeriodType = components["schemas"]["PeriodType"];
+export type ExtractionMethod = components["schemas"]["ExtractionMethod"];
+export type Entity = components["schemas"]["Entity"];
+export type EntityDetail = components["schemas"]["EntityDetail"];
+export type EntityType = components["schemas"]["EntityType"];
+export type EntityMerge = components["schemas"]["EntityMerge"];
+export type EntitySplit = components["schemas"]["EntitySplit"];
+export type Relation = components["schemas"]["Relation"];
+export type RelationType = components["schemas"]["RelationType"];
+export type GraphResponse = components["schemas"]["GraphResponse"];
 
 /** List endpoints return un-typed dicts; describe their wire shape here. */
 export type ListPage<T> = { items: T[]; next_cursor: string | null };
@@ -190,6 +212,131 @@ export function useReparse(documentId: string, dealId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["documents", dealId] });
       queryClient.invalidateQueries({ queryKey: ["document", documentId] });
+    },
+  });
+}
+
+export type FactFilters = {
+  metric?: string;
+  sourceKind?: string;
+  limit?: number;
+};
+
+export function useFacts(dealId: string, filters: FactFilters = {}) {
+  const { metric, sourceKind, limit = 200 } = filters;
+  return useInfiniteQuery<FactPage>({
+    queryKey: ["facts", dealId, metric ?? null, sourceKind ?? null],
+    queryFn: ({ pageParam }) => {
+      const params = new URLSearchParams();
+      params.set("limit", String(limit));
+      if (metric) params.set("metric", metric);
+      if (sourceKind) params.set("source_kind", sourceKind);
+      if (typeof pageParam === "string" && pageParam)
+        params.set("cursor", pageParam);
+      return api.get<FactPage>(
+        `/api/v1/deals/${dealId}/facts?${params.toString()}`,
+      );
+    },
+    initialPageParam: "",
+    getNextPageParam: (last) => last.next_cursor,
+    enabled: Boolean(dealId),
+  });
+}
+
+export function useFact(factId: string | null) {
+  return useQuery<FactDetail>({
+    queryKey: ["fact", factId],
+    queryFn: () => api.get<FactDetail>(`/api/v1/facts/${factId}`),
+    enabled: Boolean(factId),
+  });
+}
+
+export function usePatchFact(dealId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ factId, patch }: { factId: string; patch: FactPatch }) =>
+      api.patch<Fact>(`/api/v1/facts/${factId}`, patch),
+    onMutate: async ({ factId, patch }) => {
+      await queryClient.cancelQueries({ queryKey: ["facts", dealId] });
+      const snapshots = queryClient.getQueriesData<InfiniteData<FactPage>>({
+        queryKey: ["facts", dealId],
+      });
+      queryClient.setQueriesData<InfiniteData<FactPage>>(
+        { queryKey: ["facts", dealId] },
+        (old) =>
+          old
+            ? {
+                ...old,
+                pages: old.pages.map((page) => ({
+                  ...page,
+                  items: page.items.map((fact) =>
+                    fact.id === factId
+                      ? {
+                          ...fact,
+                          is_authoritative:
+                            patch.is_authoritative ?? fact.is_authoritative,
+                          notes:
+                            patch.notes !== undefined ? patch.notes : fact.notes,
+                        }
+                      : fact,
+                  ),
+                })),
+              }
+            : old,
+      );
+      return { snapshots };
+    },
+    onError: (_error, _vars, context) => {
+      for (const [key, data] of context?.snapshots ?? []) {
+        queryClient.setQueryData(key, data);
+      }
+    },
+    onSettled: () =>
+      queryClient.invalidateQueries({ queryKey: ["facts", dealId] }),
+  });
+}
+
+export function useEntity(entityId: string | null) {
+  return useQuery<EntityDetail>({
+    queryKey: ["entity", entityId],
+    queryFn: () => api.get<EntityDetail>(`/api/v1/entities/${entityId}`),
+    enabled: Boolean(entityId),
+  });
+}
+
+export function useDealGraph(dealId: string, types: EntityType[] = []) {
+  const sorted = [...types].sort();
+  return useQuery<GraphResponse>({
+    queryKey: ["graph", dealId, sorted],
+    queryFn: () => {
+      const params = new URLSearchParams();
+      params.set("limit", "1000");
+      if (sorted.length) params.set("types", sorted.join(","));
+      return api.get<GraphResponse>(
+        `/api/v1/deals/${dealId}/graph?${params.toString()}`,
+      );
+    },
+    enabled: Boolean(dealId),
+  });
+}
+
+export function useMergeEntity(dealId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      entityId,
+      intoEntityId,
+    }: {
+      entityId: string;
+      intoEntityId: string;
+    }) =>
+      api.post<Entity>(`/api/v1/entities/${entityId}/merge`, {
+        into_entity_id: intoEntityId,
+      } satisfies EntityMerge),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["graph", dealId] });
+      queryClient.invalidateQueries({ queryKey: ["entity"] });
+      queryClient.invalidateQueries({ queryKey: ["facts", dealId] });
     },
   });
 }

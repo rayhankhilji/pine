@@ -83,6 +83,8 @@ export const api = {
   get: <T>(path: string) => request<T>(path),
   post: <T>(path: string, body?: unknown) =>
     request<T>(path, { method: "POST", body: JSON.stringify(body ?? {}) }),
+  patch: <T>(path: string, body?: unknown) =>
+    request<T>(path, { method: "PATCH", body: JSON.stringify(body ?? {}) }),
   upload: <T>(path: string, form: FormData, onProgress?: (p: UploadProgress) => void) =>
     upload<T>(path, form, onProgress),
   health: () => request<HealthResponse>("/api/v1/health"),
