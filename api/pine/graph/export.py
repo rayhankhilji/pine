@@ -1,12 +1,15 @@
 """Graph export — JSON {nodes, edges} and GraphML (F-04.AC3 surface)."""
 
 import io
+from typing import Any
 
 import networkx as nx
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from pine.models.entity import Entity, Relation
+
+GraphPayload = dict[str, list[dict[str, Any]]]
 
 
 def _graph(session: Session, deal_id: str) -> nx.DiGraph:
@@ -42,7 +45,7 @@ def _graph(session: Session, deal_id: str) -> nx.DiGraph:
     return g
 
 
-def export_json(session: Session, deal_id: str) -> dict[str, object]:
+def export_json(session: Session, deal_id: str) -> GraphPayload:
     """`{nodes: [...], edges: [...]}` — the API/frontend payload shape."""
     g = _graph(session, deal_id)
     return {
