@@ -862,6 +862,466 @@
         }
       }
     },
+    "/api/v1/deals/{deal_id}/facts": {
+      "get": {
+        "tags": [
+          "facts"
+        ],
+        "summary": "List Facts",
+        "operationId": "list_facts_api_v1_deals__deal_id__facts_get",
+        "parameters": [
+          {
+            "name": "deal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Deal Id"
+            }
+          },
+          {
+            "name": "metric",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Metric"
+            }
+          },
+          {
+            "name": "period_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Period From"
+            }
+          },
+          {
+            "name": "period_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Period To"
+            }
+          },
+          {
+            "name": "source_kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/DocType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source Kind"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FactPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/facts/{fact_id}": {
+      "get": {
+        "tags": [
+          "facts"
+        ],
+        "summary": "Get Fact",
+        "operationId": "get_fact_api_v1_facts__fact_id__get",
+        "parameters": [
+          {
+            "name": "fact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Fact Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FactDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "facts"
+        ],
+        "summary": "Patch Fact",
+        "operationId": "patch_fact_api_v1_facts__fact_id__patch",
+        "parameters": [
+          {
+            "name": "fact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Fact Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FactPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fact"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deals/{deal_id}/graph": {
+      "get": {
+        "tags": [
+          "graph"
+        ],
+        "summary": "Deal Graph",
+        "operationId": "deal_graph_api_v1_deals__deal_id__graph_get",
+        "parameters": [
+          {
+            "name": "deal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Deal Id"
+            }
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Types"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 2000,
+              "minimum": 1,
+              "default": 500,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Format"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GraphResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/entities/{entity_id}": {
+      "get": {
+        "tags": [
+          "graph"
+        ],
+        "summary": "Get Entity",
+        "operationId": "get_entity_api_v1_entities__entity_id__get",
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Entity Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/entities/{entity_id}/merge": {
+      "post": {
+        "tags": [
+          "graph"
+        ],
+        "summary": "Merge Entity",
+        "operationId": "merge_entity_api_v1_entities__entity_id__merge_post",
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Entity Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EntityMerge"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Entity"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/entities/{entity_id}/split": {
+      "post": {
+        "tags": [
+          "graph"
+        ],
+        "summary": "Split Entity Endpoint",
+        "operationId": "split_entity_endpoint_api_v1_entities__entity_id__split_post",
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Entity Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EntitySplit"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Entity"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/deals/{deal_id}/events": {
       "get": {
         "tags": [
@@ -1145,6 +1605,47 @@
           "ref"
         ],
         "title": "Cell"
+      },
+      "ContradictionSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "rule_id": {
+            "type": "string",
+            "title": "Rule Id"
+          },
+          "metric": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metric"
+          },
+          "severity": {
+            "type": "string",
+            "title": "Severity"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "rule_id",
+          "metric",
+          "severity",
+          "status"
+        ],
+        "title": "ContradictionSummary",
+        "description": "Placeholder shape for the P4 Contradiction engine (\u00a75)."
       },
       "Deal": {
         "properties": {
@@ -1747,6 +2248,887 @@
         ],
         "title": "DocumentUpload"
       },
+      "Entity": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "deal_id": {
+            "type": "string",
+            "title": "Deal Id"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EntityType"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Type"
+          },
+          "canonical_name": {
+            "type": "string",
+            "title": "Canonical Name"
+          },
+          "normalized_name": {
+            "type": "string",
+            "title": "Normalized Name"
+          },
+          "attrs": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Attrs"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence"
+          },
+          "merged_into_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Merged Into Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "deal_id",
+          "type",
+          "canonical_name",
+          "normalized_name",
+          "attrs",
+          "confidence",
+          "merged_into_id",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "Entity"
+      },
+      "EntityAlias": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "entity_id": {
+            "type": "string",
+            "title": "Entity Id"
+          },
+          "alias": {
+            "type": "string",
+            "title": "Alias"
+          },
+          "normalized": {
+            "type": "string",
+            "title": "Normalized"
+          },
+          "source_document_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Document Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "entity_id",
+          "alias",
+          "normalized",
+          "source_document_id",
+          "created_at"
+        ],
+        "title": "EntityAlias"
+      },
+      "EntityDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "deal_id": {
+            "type": "string",
+            "title": "Deal Id"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EntityType"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Type"
+          },
+          "canonical_name": {
+            "type": "string",
+            "title": "Canonical Name"
+          },
+          "normalized_name": {
+            "type": "string",
+            "title": "Normalized Name"
+          },
+          "attrs": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Attrs"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence"
+          },
+          "merged_into_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Merged Into Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "aliases": {
+            "items": {
+              "$ref": "#/components/schemas/EntityAlias"
+            },
+            "type": "array",
+            "title": "Aliases",
+            "default": []
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "type": "array",
+            "title": "Evidence",
+            "default": []
+          },
+          "relations": {
+            "items": {
+              "$ref": "#/components/schemas/Relation"
+            },
+            "type": "array",
+            "title": "Relations",
+            "default": []
+          },
+          "facts": {
+            "items": {
+              "$ref": "#/components/schemas/Fact"
+            },
+            "type": "array",
+            "title": "Facts",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "deal_id",
+          "type",
+          "canonical_name",
+          "normalized_name",
+          "attrs",
+          "confidence",
+          "merged_into_id",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "EntityDetail"
+      },
+      "EntityMerge": {
+        "properties": {
+          "into_entity_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Into Entity Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "into_entity_id"
+        ],
+        "title": "EntityMerge"
+      },
+      "EntitySplit": {
+        "properties": {
+          "alias_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Alias Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "alias_ids"
+        ],
+        "title": "EntitySplit"
+      },
+      "EntityType": {
+        "type": "string",
+        "enum": [
+          "company",
+          "customer",
+          "contract",
+          "revenue_stream",
+          "invoice",
+          "person",
+          "shareholder",
+          "security_class",
+          "liability",
+          "bank_account",
+          "employee",
+          "market"
+        ],
+        "title": "EntityType"
+      },
+      "Evidence": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "deal_id": {
+            "type": "string",
+            "title": "Deal Id"
+          },
+          "document_id": {
+            "type": "string",
+            "title": "Document Id"
+          },
+          "page_no": {
+            "type": "integer",
+            "title": "Page No"
+          },
+          "chunk_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chunk Id"
+          },
+          "cell_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cell Id"
+          },
+          "char_start": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Char Start"
+          },
+          "char_end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Char End"
+          },
+          "quote": {
+            "type": "string",
+            "title": "Quote"
+          },
+          "bbox": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bbox"
+          },
+          "target_kind": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Kind"
+          },
+          "target_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Filename"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "deal_id",
+          "document_id",
+          "page_no",
+          "chunk_id",
+          "cell_id",
+          "char_start",
+          "char_end",
+          "quote",
+          "bbox",
+          "target_kind",
+          "target_id",
+          "created_at"
+        ],
+        "title": "Evidence"
+      },
+      "ExtractionMethod": {
+        "type": "string",
+        "enum": [
+          "table",
+          "llm",
+          "derived",
+          "manual"
+        ],
+        "title": "ExtractionMethod"
+      },
+      "Fact": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "deal_id": {
+            "type": "string",
+            "title": "Deal Id"
+          },
+          "subject_entity_id": {
+            "type": "string",
+            "title": "Subject Entity Id"
+          },
+          "metric": {
+            "type": "string",
+            "title": "Metric"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "value_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value Text"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/Unit"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "period_type": {
+            "$ref": "#/components/schemas/PeriodType"
+          },
+          "period_start": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Period Start"
+          },
+          "period_end": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Period End"
+          },
+          "as_of": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "source_kind": {
+            "type": "string",
+            "title": "Source Kind"
+          },
+          "extraction_method": {
+            "$ref": "#/components/schemas/ExtractionMethod"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence"
+          },
+          "is_authoritative": {
+            "type": "boolean",
+            "title": "Is Authoritative"
+          },
+          "superseded_by_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Superseded By Id"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "type": "array",
+            "title": "Evidence",
+            "default": []
+          },
+          "contested": {
+            "type": "boolean",
+            "title": "Contested",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "deal_id",
+          "subject_entity_id",
+          "metric",
+          "value",
+          "value_text",
+          "unit",
+          "currency",
+          "period_type",
+          "period_start",
+          "period_end",
+          "as_of",
+          "source_kind",
+          "extraction_method",
+          "confidence",
+          "is_authoritative",
+          "superseded_by_id",
+          "notes",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "Fact"
+      },
+      "FactDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "deal_id": {
+            "type": "string",
+            "title": "Deal Id"
+          },
+          "subject_entity_id": {
+            "type": "string",
+            "title": "Subject Entity Id"
+          },
+          "metric": {
+            "type": "string",
+            "title": "Metric"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "value_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value Text"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/Unit"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "period_type": {
+            "$ref": "#/components/schemas/PeriodType"
+          },
+          "period_start": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Period Start"
+          },
+          "period_end": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Period End"
+          },
+          "as_of": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "source_kind": {
+            "type": "string",
+            "title": "Source Kind"
+          },
+          "extraction_method": {
+            "$ref": "#/components/schemas/ExtractionMethod"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence"
+          },
+          "is_authoritative": {
+            "type": "boolean",
+            "title": "Is Authoritative"
+          },
+          "superseded_by_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Superseded By Id"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "type": "array",
+            "title": "Evidence",
+            "default": []
+          },
+          "contested": {
+            "type": "boolean",
+            "title": "Contested",
+            "default": false
+          },
+          "derived_from": {
+            "items": {
+              "$ref": "#/components/schemas/Fact"
+            },
+            "type": "array",
+            "title": "Derived From",
+            "default": []
+          },
+          "contradictions": {
+            "items": {
+              "$ref": "#/components/schemas/ContradictionSummary"
+            },
+            "type": "array",
+            "title": "Contradictions",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "deal_id",
+          "subject_entity_id",
+          "metric",
+          "value",
+          "value_text",
+          "unit",
+          "currency",
+          "period_type",
+          "period_start",
+          "period_end",
+          "as_of",
+          "source_kind",
+          "extraction_method",
+          "confidence",
+          "is_authoritative",
+          "superseded_by_id",
+          "notes",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "FactDetail"
+      },
+      "FactPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Fact"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "next_cursor"
+        ],
+        "title": "FactPage"
+      },
+      "FactPatch": {
+        "properties": {
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "is_authoritative": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Authoritative"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "FactPatch"
+      },
+      "GraphResponse": {
+        "properties": {
+          "nodes": {
+            "items": {
+              "$ref": "#/components/schemas/Entity"
+            },
+            "type": "array",
+            "title": "Nodes"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/components/schemas/Relation"
+            },
+            "type": "array",
+            "title": "Edges"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nodes",
+          "edges"
+        ],
+        "title": "GraphResponse"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -2030,6 +3412,90 @@
           "sheet_name"
         ],
         "title": "PageSummary"
+      },
+      "PeriodType": {
+        "type": "string",
+        "enum": [
+          "point",
+          "month",
+          "quarter",
+          "fiscal_year",
+          "ttm",
+          "custom"
+        ],
+        "title": "PeriodType"
+      },
+      "Relation": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "deal_id": {
+            "type": "string",
+            "title": "Deal Id"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RelationType"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Type"
+          },
+          "source_entity_id": {
+            "type": "string",
+            "title": "Source Entity Id"
+          },
+          "target_entity_id": {
+            "type": "string",
+            "title": "Target Entity Id"
+          },
+          "attrs": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Attrs"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "deal_id",
+          "type",
+          "source_entity_id",
+          "target_entity_id",
+          "attrs",
+          "confidence",
+          "created_at"
+        ],
+        "title": "Relation"
+      },
+      "RelationType": {
+        "type": "string",
+        "enum": [
+          "has_customer",
+          "has_contract",
+          "generates_revenue",
+          "billed_by",
+          "owns_shares",
+          "employs",
+          "owes",
+          "banks_with",
+          "competes_in"
+        ],
+        "title": "RelationType"
       },
       "ReparseResponse": {
         "properties": {
@@ -2548,6 +4014,18 @@
           "title"
         ],
         "title": "TableSummary"
+      },
+      "Unit": {
+        "type": "string",
+        "enum": [
+          "currency",
+          "percent",
+          "count",
+          "months",
+          "ratio",
+          "text"
+        ],
+        "title": "Unit"
       },
       "ValidationError": {
         "properties": {

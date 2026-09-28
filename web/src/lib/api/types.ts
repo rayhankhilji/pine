@@ -230,6 +230,109 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/deals/{deal_id}/facts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Facts */
+        get: operations["list_facts_api_v1_deals__deal_id__facts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/facts/{fact_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Fact */
+        get: operations["get_fact_api_v1_facts__fact_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Fact */
+        patch: operations["patch_fact_api_v1_facts__fact_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/deals/{deal_id}/graph": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Deal Graph */
+        get: operations["deal_graph_api_v1_deals__deal_id__graph_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/entities/{entity_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Entity */
+        get: operations["get_entity_api_v1_entities__entity_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/entities/{entity_id}/merge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Merge Entity */
+        post: operations["merge_entity_api_v1_entities__entity_id__merge_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/entities/{entity_id}/split": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Split Entity Endpoint */
+        post: operations["split_entity_endpoint_api_v1_entities__entity_id__split_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/deals/{deal_id}/events": {
         parameters: {
             query?: never;
@@ -314,6 +417,22 @@ export interface components {
             bbox: number[] | null;
             /** Ref */
             ref: string | null;
+        };
+        /**
+         * ContradictionSummary
+         * @description Placeholder shape for the P4 Contradiction engine (§5).
+         */
+        ContradictionSummary: {
+            /** Id */
+            id: string;
+            /** Rule Id */
+            rule_id: string;
+            /** Metric */
+            metric: string | null;
+            /** Severity */
+            severity: string;
+            /** Status */
+            status: string;
         };
         /** Deal */
         Deal: {
@@ -502,6 +621,303 @@ export interface components {
             /** Skipped */
             skipped: components["schemas"]["SkippedFile"][];
         };
+        /** Entity */
+        Entity: {
+            /** Id */
+            id: string;
+            /** Deal Id */
+            deal_id: string;
+            /** Type */
+            type: components["schemas"]["EntityType"] | string;
+            /** Canonical Name */
+            canonical_name: string;
+            /** Normalized Name */
+            normalized_name: string;
+            /** Attrs */
+            attrs: {
+                [key: string]: unknown;
+            };
+            /** Confidence */
+            confidence: number;
+            /** Merged Into Id */
+            merged_into_id: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** EntityAlias */
+        EntityAlias: {
+            /** Id */
+            id: string;
+            /** Entity Id */
+            entity_id: string;
+            /** Alias */
+            alias: string;
+            /** Normalized */
+            normalized: string;
+            /** Source Document Id */
+            source_document_id: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** EntityDetail */
+        EntityDetail: {
+            /** Id */
+            id: string;
+            /** Deal Id */
+            deal_id: string;
+            /** Type */
+            type: components["schemas"]["EntityType"] | string;
+            /** Canonical Name */
+            canonical_name: string;
+            /** Normalized Name */
+            normalized_name: string;
+            /** Attrs */
+            attrs: {
+                [key: string]: unknown;
+            };
+            /** Confidence */
+            confidence: number;
+            /** Merged Into Id */
+            merged_into_id: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * Aliases
+             * @default []
+             */
+            aliases: components["schemas"]["EntityAlias"][];
+            /**
+             * Evidence
+             * @default []
+             */
+            evidence: components["schemas"]["Evidence"][];
+            /**
+             * Relations
+             * @default []
+             */
+            relations: components["schemas"]["Relation"][];
+            /**
+             * Facts
+             * @default []
+             */
+            facts: components["schemas"]["Fact"][];
+        };
+        /** EntityMerge */
+        EntityMerge: {
+            /** Into Entity Id */
+            into_entity_id: string;
+        };
+        /** EntitySplit */
+        EntitySplit: {
+            /** Alias Ids */
+            alias_ids: string[];
+        };
+        /**
+         * EntityType
+         * @enum {string}
+         */
+        EntityType: "company" | "customer" | "contract" | "revenue_stream" | "invoice" | "person" | "shareholder" | "security_class" | "liability" | "bank_account" | "employee" | "market";
+        /** Evidence */
+        Evidence: {
+            /** Id */
+            id: string;
+            /** Deal Id */
+            deal_id: string;
+            /** Document Id */
+            document_id: string;
+            /** Page No */
+            page_no: number;
+            /** Chunk Id */
+            chunk_id: string | null;
+            /** Cell Id */
+            cell_id: string | null;
+            /** Char Start */
+            char_start: number | null;
+            /** Char End */
+            char_end: number | null;
+            /** Quote */
+            quote: string;
+            /** Bbox */
+            bbox: number[] | null;
+            /** Target Kind */
+            target_kind: string | null;
+            /** Target Id */
+            target_id: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Filename */
+            filename?: string | null;
+        };
+        /**
+         * ExtractionMethod
+         * @enum {string}
+         */
+        ExtractionMethod: "table" | "llm" | "derived" | "manual";
+        /** Fact */
+        Fact: {
+            /** Id */
+            id: string;
+            /** Deal Id */
+            deal_id: string;
+            /** Subject Entity Id */
+            subject_entity_id: string;
+            /** Metric */
+            metric: string;
+            /** Value */
+            value: string | null;
+            /** Value Text */
+            value_text: string | null;
+            unit: components["schemas"]["Unit"];
+            /** Currency */
+            currency: string | null;
+            period_type: components["schemas"]["PeriodType"];
+            /** Period Start */
+            period_start: string | null;
+            /** Period End */
+            period_end: string | null;
+            /** As Of */
+            as_of: string | null;
+            /** Source Kind */
+            source_kind: string;
+            extraction_method: components["schemas"]["ExtractionMethod"];
+            /** Confidence */
+            confidence: number;
+            /** Is Authoritative */
+            is_authoritative: boolean;
+            /** Superseded By Id */
+            superseded_by_id: string | null;
+            /** Notes */
+            notes: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * Evidence
+             * @default []
+             */
+            evidence: components["schemas"]["Evidence"][];
+            /**
+             * Contested
+             * @default false
+             */
+            contested: boolean;
+        };
+        /** FactDetail */
+        FactDetail: {
+            /** Id */
+            id: string;
+            /** Deal Id */
+            deal_id: string;
+            /** Subject Entity Id */
+            subject_entity_id: string;
+            /** Metric */
+            metric: string;
+            /** Value */
+            value: string | null;
+            /** Value Text */
+            value_text: string | null;
+            unit: components["schemas"]["Unit"];
+            /** Currency */
+            currency: string | null;
+            period_type: components["schemas"]["PeriodType"];
+            /** Period Start */
+            period_start: string | null;
+            /** Period End */
+            period_end: string | null;
+            /** As Of */
+            as_of: string | null;
+            /** Source Kind */
+            source_kind: string;
+            extraction_method: components["schemas"]["ExtractionMethod"];
+            /** Confidence */
+            confidence: number;
+            /** Is Authoritative */
+            is_authoritative: boolean;
+            /** Superseded By Id */
+            superseded_by_id: string | null;
+            /** Notes */
+            notes: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * Evidence
+             * @default []
+             */
+            evidence: components["schemas"]["Evidence"][];
+            /**
+             * Contested
+             * @default false
+             */
+            contested: boolean;
+            /**
+             * Derived From
+             * @default []
+             */
+            derived_from: components["schemas"]["Fact"][];
+            /**
+             * Contradictions
+             * @default []
+             */
+            contradictions: components["schemas"]["ContradictionSummary"][];
+        };
+        /** FactPage */
+        FactPage: {
+            /** Items */
+            items: components["schemas"]["Fact"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+        };
+        /** FactPatch */
+        FactPatch: {
+            /** Notes */
+            notes?: string | null;
+            /** Is Authoritative */
+            is_authoritative?: boolean | null;
+        };
+        /** GraphResponse */
+        GraphResponse: {
+            /** Nodes */
+            nodes: components["schemas"]["Entity"][];
+            /** Edges */
+            edges: components["schemas"]["Relation"][];
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -604,6 +1020,40 @@ export interface components {
             /** Sheet Name */
             sheet_name: string | null;
         };
+        /**
+         * PeriodType
+         * @enum {string}
+         */
+        PeriodType: "point" | "month" | "quarter" | "fiscal_year" | "ttm" | "custom";
+        /** Relation */
+        Relation: {
+            /** Id */
+            id: string;
+            /** Deal Id */
+            deal_id: string;
+            /** Type */
+            type: components["schemas"]["RelationType"] | string;
+            /** Source Entity Id */
+            source_entity_id: string;
+            /** Target Entity Id */
+            target_entity_id: string;
+            /** Attrs */
+            attrs: {
+                [key: string]: unknown;
+            };
+            /** Confidence */
+            confidence: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /**
+         * RelationType
+         * @enum {string}
+         */
+        RelationType: "has_customer" | "has_contract" | "generates_revenue" | "billed_by" | "owns_shares" | "employs" | "owes" | "banks_with" | "competes_in";
         /** ReparseResponse */
         ReparseResponse: {
             /** Job Id */
@@ -737,6 +1187,11 @@ export interface components {
             /** Title */
             title: string | null;
         };
+        /**
+         * Unit
+         * @enum {string}
+         */
+        Unit: "currency" | "percent" | "count" | "months" | "ratio" | "text";
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -1321,6 +1776,246 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IndexResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_facts_api_v1_deals__deal_id__facts_get: {
+        parameters: {
+            query?: {
+                metric?: string | null;
+                period_from?: string | null;
+                period_to?: string | null;
+                source_kind?: components["schemas"]["DocType"] | null;
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                deal_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FactPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_fact_api_v1_facts__fact_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                fact_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FactDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_fact_api_v1_facts__fact_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                fact_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FactPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Fact"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    deal_graph_api_v1_deals__deal_id__graph_get: {
+        parameters: {
+            query?: {
+                types?: string | null;
+                limit?: number;
+                format?: string | null;
+            };
+            header?: never;
+            path: {
+                deal_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GraphResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_entity_api_v1_entities__entity_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entity_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EntityDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    merge_entity_api_v1_entities__entity_id__merge_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entity_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EntityMerge"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Entity"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    split_entity_endpoint_api_v1_entities__entity_id__split_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entity_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EntitySplit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Entity"];
                 };
             };
             /** @description Validation Error */
