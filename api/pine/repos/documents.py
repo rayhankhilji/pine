@@ -3,11 +3,10 @@
 import base64
 from datetime import datetime
 
-from sqlalchemy import Select, func, or_, select
+from sqlalchemy import Select, or_, select
 from sqlalchemy.orm import Session
 
 from pine.models.document import DocStatus, DocType, Document, Page, Table
-from pine.models.job import Job, JobKind, JobStatus
 
 
 def get_document(session: Session, document_id: str) -> Document | None:
@@ -75,29 +74,6 @@ def document_statuses(session: Session, deal_id: str) -> dict[str, str]:
         select(Document.id, Document.status).where(Document.deal_id == deal_id)
     ).all()
     return {doc_id: str(status) for doc_id, status in rows}
-
-
-def index_status(session: Session, deal_id: str) -> dict[str, object]:
-    """Index status until P2 chunking lands, derived from index_deal jobs."""
-    active = session.scalar(
-        select(func.count())
-        .select_from(Job)
-        .where(Job.deal_id == deal_id)
-        .where(Job.kind == JobKind.index_deal)
-        .where(Job.status.in_([JobStatus.queued, JobStatus.running]))
-    )
-    if active:
-        status = "indexing"
-    else:
-        done = session.scalar(
-            select(func.count())
-            .select_from(Job)
-            .where(Job.deal_id == deal_id)
-            .where(Job.kind == JobKind.index_deal)
-            .where(Job.status == JobStatus.succeeded)
-        )
-        status = "ready" if done else "empty"
-    return {"status": status, "embedded_count": 0}
 
 
 def table_with_page(session: Session, table_id: str) -> tuple[Table, Page] | None:

@@ -1,6 +1,5 @@
 """Job handlers for the ingestion pipeline (ARCHITECTURE §9)."""
 
-import logging
 from pathlib import Path
 
 from sqlalchemy import delete, func, select
@@ -17,8 +16,6 @@ from pine.jobs.worker import job_handler
 from pine.models.document import Blob, Block, Cell, DocStatus, Document, Page, Table
 from pine.models.job import Job, JobKind
 from pine.storage.blobstore import BlobStore
-
-logger = logging.getLogger(__name__)
 
 TERMINAL_STATUSES = (DocStatus.parsed, DocStatus.failed, DocStatus.unsupported)
 
@@ -118,6 +115,8 @@ def parse_document(session: Session, job: Job) -> None:
     persist_result(session, store, document, result)
     document.ext = ext
     document.status = DocStatus.parsed
+    # clear the index stamp — freshly parsed text is not in the index
+    document.meta = {k: v for k, v in document.meta.items() if k != "indexed"}
     enqueue(
         session,
         JobKind.classify_document,
@@ -137,9 +136,3 @@ def classify_document_job(session: Session, job: Job) -> None:
     doc_type, confidence = classify_document(session, document)
     document.doc_type = doc_type
     document.meta = {**document.meta, "classify_confidence": confidence}
-
-
-@job_handler(JobKind.index_deal)
-def index_deal_stub(session: Session, job: Job) -> None:
-    """Stub until P2 chunking/embedding lands."""
-    logger.info("index_deal stub for deal %s", job.payload.get("deal_id"))

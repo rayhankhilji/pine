@@ -12,6 +12,7 @@ from sse_starlette.sse import EventSourceResponse
 
 from pine.db import get_session_factory
 from pine.errors import AppError
+from pine.index.status import index_status
 from pine.repos import deals as deals_repo
 from pine.repos import documents as docs_repo
 
@@ -30,7 +31,7 @@ def _snapshot(
     with factory() as session:
         return (
             docs_repo.document_statuses(session, deal_id),
-            docs_repo.index_status(session, deal_id),
+            index_status(session, deal_id),
         )
 
 
