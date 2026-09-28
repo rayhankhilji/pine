@@ -9,6 +9,9 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+import pine.contradictions.jobs  # noqa: F401 — registers job handlers
+import pine.facts.jobs  # noqa: F401 — registers job handlers
+import pine.graph.jobs  # noqa: F401 — registers job handlers
 import pine.index.jobs  # noqa: F401 — registers job handlers
 import pine.ingest.jobs  # noqa: F401 — registers job handlers
 from pine import __version__

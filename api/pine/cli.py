@@ -19,6 +19,9 @@ def serve(host: str = "127.0.0.1", port: int = 8000, reload: bool = False) -> No
 @app.command()
 def worker() -> None:
     """Run the background job worker standalone."""
+    import pine.contradictions.jobs  # noqa: F401 — registers job handlers
+    import pine.facts.jobs  # noqa: F401 — registers job handlers
+    import pine.graph.jobs  # noqa: F401 — registers job handlers
     import pine.index.jobs  # noqa: F401 — registers job handlers
     import pine.ingest.jobs  # noqa: F401 — registers job handlers
     from pine.config import get_settings

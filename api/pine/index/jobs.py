@@ -14,6 +14,7 @@ from sqlalchemy.orm import Session
 from pine.index.chunker import chunk_document
 from pine.index.embeddings import get_embedder
 from pine.index.vectors import pack_vec
+from pine.jobs.queue import enqueue
 from pine.jobs.worker import job_handler
 from pine.models.document import DocStatus, Document
 from pine.models.job import Job, JobKind
@@ -46,4 +47,12 @@ def index_deal(session: Session, job: Job) -> None:
         document.meta = {**document.meta, "indexed": True}
         session.commit()
 
+    # chain: facts extraction runs once the index exists (ARCHITECTURE §6)
+    enqueue(
+        session,
+        JobKind.extract_facts,
+        {"deal_id": deal_id},
+        deal_id=deal_id,
+        idempotency_key=f"facts:{deal_id}:{total}",
+    )
     logger.info("index_deal %s: %d chunks over %d documents", deal_id, total, len(documents))
