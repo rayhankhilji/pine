@@ -8,7 +8,7 @@
 
 **Phase 1 — Ingestion: complete.** All P1 tasks done: full upload/document/table/job/SSE API surface (ARCHITECTURE §5), deterministic Northwind demo room + `POST /demo` (202, 409 on concurrent ingest), web home "Load demo" → documents page (dropzone, zip expansion, status pills, unreadable group, live SSE) and document viewer (rendered pages, thumbnails, text panel, spreadsheet tables, `?page=` deep links). Live check: `POST /api/v1/demo` ingested 19 documents → all `parsed` in ~5 s; 19 parse + 19 classify + 1 index job succeeded. 99 api tests green; ruff + mypy strict clean; web lint + build clean; Playwright e2e specs + CI `e2e` job added.
 
-**Next action: P2.T4** — BM25 + dense search, RRF fusion, filters (`pine/index/retrieval.py`).
+**Next action: P2.T5** — rerankers (`none`/`llm`/`cross-encoder`) + FakeLLM rerank support.
 
 ## Current Phase Checklist
 
@@ -32,7 +32,7 @@ Phase 2 — Retrieval (F-03):
 - [x] P2.T1 — `Chunk` model + migration `d4d47b54c38d`; `pine/index/chunker.py` (o200k_base, 400/800/60 prose, ≤25-row table groups with header repeat, slide/email kinds) · tests/index/test_chunker.py (8 tests)
 - [x] P2.T2 — `pine/index/embeddings.py` (Embedder protocol, HashEmbedder 256-d sha256, OpenAIEmbedder batch-100/retry/≤4-concurrent, EMBEDDINGS_FALLBACK), `pine/index/vectors.py` pack/unpack · tests/index/test_embedders.py (10 tests)
 - [x] P2.T3 — real `index_deal` handler in `pine/index/jobs.py` (stub removed), `pine/index/status.py` (empty/indexing/stale/ready via `meta["indexed"]` stamp); reparse clears stamp · tests/index/test_index_job.py (3 tests)
-- P2.T4 — BM25 + dense search, RRF fusion, filters
+- [x] P2.T4 — `pine/index/retrieval.py` (BM25Okapi + float32 cosine matrix, per-deal caches keyed `(deal_id, chunk_count)`, RRF k=60 top-50×2, hard filters) · tests/index/test_retrieval.py (9 tests incl. AC1/AC2)
 - P2.T5 — Rerankers (none/llm/cross-encoder)
 - P2.T6 — `POST /deals/{id}/search`, `POST/GET /deals/{id}/index` endpoints
 - P2.T7 — Web: search page + index status/reindex on documents page
