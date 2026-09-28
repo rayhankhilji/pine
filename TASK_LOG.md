@@ -8,7 +8,9 @@
 
 **Phase 1 — Ingestion: complete.** All P1 tasks done: full upload/document/table/job/SSE API surface (ARCHITECTURE §5), deterministic Northwind demo room + `POST /demo` (202, 409 on concurrent ingest), web home "Load demo" → documents page (dropzone, zip expansion, status pills, unreadable group, live SSE) and document viewer (rendered pages, thumbnails, text panel, spreadsheet tables, `?page=` deep links). Live check: `POST /api/v1/demo` ingested 19 documents → all `parsed` in ~5 s; 19 parse + 19 classify + 1 index job succeeded. 99 api tests green; ruff + mypy strict clean; web lint + build clean; Playwright e2e specs + CI `e2e` job added.
 
-**Next action: P2.T7** — web search page + index status/reindex on documents page.
+**Phase 2 — Retrieval: complete.** All P2 tasks done: `Chunk` model + structure-aware chunker (400/800/60 prose overlap, ≤25-row table groups with header repeat, slide/email kinds), HashEmbedder (256-d deterministic sha256) + OpenAIEmbedder (batch-100/retry/fallback), real `index_deal` job, index status (empty/indexing/stale/ready), hybrid BM25 + dense cosine with RRF(k=60) and hard filters, rerankers (none/llm/cross-encoder lazy), `POST /deals/{id}/search` + `POST|GET /deals/{id}/index`, web search page (query/k/doc-type chips, highlighted hits → document viewer deep links), index pill + Reindex on documents page, e2e spec. Live check: `POST /demo` → 39 chunks indexed (`ready`); `"annual recurring revenue"` returns `email_02.eml`, `MSA_Delta_Freight.pdf`, `02_Financials_FY2024_FY2025.xlsx` top-3. 145 api tests green; ruff + mypy strict clean; web lint + build clean; Playwright search spec green.
+
+**Next action: P3.T1** — see ROADMAP Phase 3.
 
 ## Current Phase Checklist
 
@@ -35,7 +37,7 @@ Phase 2 — Retrieval (F-03):
 - [x] P2.T4 — `pine/index/retrieval.py` (BM25Okapi + float32 cosine matrix, per-deal caches keyed `(deal_id, chunk_count)`, RRF k=60 top-50×2, hard filters) · tests/index/test_retrieval.py (9 tests incl. AC1/AC2)
 - [x] P2.T5 — `pine/index/rerank.py` (NoReranker, LLMReranker listwise ≤25 candidates `{ranking:[int]}`, CrossEncoderReranker lazy-import w/ fallback), minimal `pine/llm/` (base protocol, FakeLLM rerank script, OpenAILLM structured outputs, `get_llm`/`model_for`) · tests/index/test_rerank.py (9 tests)
 - [x] P2.T6 — `pine/api/search.py` + `pine/api/schemas/search.py` (SearchRequest/SearchHit/IndexStatus), POST index → 202 {job_id}, OpenAPI types regenerated · tests/api/test_search.py (8 tests)
-- P2.T7 — Web: search page + index status/reindex on documents page
+- [x] P2.T7 — Web: `/deals/[id]/search` (query box, k control, doc_type chips, term-highlighted hits linking to `?page=` viewer), documents-page index pill for all states + Reindex button, `useSearch`/`useIndexStatus`/`useReindex` hooks on generated types · e2e/search.spec.ts green
 
 ## Blockers
 
@@ -86,7 +88,13 @@ None.
 - Concurrency fixes found via e2e: WAL + busy_timeout + `check_same_thread=False`; worker polls moved off the event loop; parse jobs hold no write lock while parsing; periodic stale-lock requeue.
 - Final: 99 api tests green, ruff/mypy clean, web lint+build clean; live `POST /demo` → 19 docs all `parsed`, all jobs succeeded.
 
+### 2026-09-28 — Session 5
+- P2.T1–T7: `Chunk` model + migration `d4d47b54c38d`, structure-aware chunker, HashEmbedder/OpenAIEmbedder + vectors, `index_deal` job + status service, BM25+dense RRF retrieval, rerankers + `pine/llm` layer, search/index endpoints, web search page + index/reindex UI, e2e spec.
+- Live check on fresh DB: `POST /demo` → 19 docs parsed → 39 chunks embedded (`ready`); `"annual recurring revenue"` → email_02.eml, MSA_Delta_Freight.pdf, 02_Financials_FY2024_FY2025.xlsx.
+- Final: 145 api tests green (1 skipped), ruff/mypy strict clean, web lint+build clean, `make generate` drift-free.
+
 ## Completed Phases
 
 - **Phase 0 — Foundation** (2026-09-23): monorepo, API skeleton, DB + migrations, job worker, error envelope, API-key auth, web shell, CI. All exit criteria met.
 - **Phase 1 — Ingestion & document intelligence** (2026-09-28): full upload→parse→classify pipeline, document APIs + SSE, demo room + `POST /demo`, documents UI + viewer, e2e harness. Exit criteria met: demo room loads via UI, all files reach `parsed`.
+- **Phase 2 — Retrieval** (2026-09-28): structure-aware chunking, deterministic hash + OpenAI embeddings, index job + status, hybrid BM25/dense RRF search with filters, optional reranking, search/index APIs, search UI + reindex, e2e. Exit criteria met: hybrid search returns traceable hits over the demo room.
