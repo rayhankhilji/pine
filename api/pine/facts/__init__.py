@@ -1,3 +1,4 @@
+from pine.facts.periods import PeriodSpec, comparable, format_period, parse_period
 from pine.facts.store import (
     EvidenceInvalid,
     EvidenceRequired,
@@ -11,5 +12,9 @@ __all__ = [
     "EvidenceRequired",
     "EvidenceSpec",
     "EvidenceStore",
+    "PeriodSpec",
+    "comparable",
+    "format_period",
+    "parse_period",
     "whitespace_normalize",
 ]
