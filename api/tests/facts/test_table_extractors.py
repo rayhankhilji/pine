@@ -378,10 +378,10 @@ def test_extractors_do_not_cross_match(session: Session) -> None:
 
 
 def test_demo_room_f05_ac1(session: Session, demo_deal: Deal) -> None:
-    deal = demo_deal
+    deal = demo_deal  # fixture drains the whole chain — facts already exist
     written = run_extractors(session, deal.id)
     session.commit()
-    assert written > 0
+    assert written == 0  # idempotent re-run
 
     # F-05.AC1 — revenue FY2024 + FY2025 from the financials xlsx
     fin = session.scalar(

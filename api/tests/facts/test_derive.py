@@ -245,12 +245,14 @@ def test_derive_idempotent(session: Session) -> None:
 
 
 def test_derive_demo_room(session: Session, demo_deal: Deal) -> None:
-    deal = demo_deal
+    deal = demo_deal  # fixture drains the whole chain — facts already derived
     run_extractors(session, deal.id)
     extract_facts(session, deal.id)
     stats = derive_facts(session, deal.id)
     session.commit()
-    assert stats.facts_written > 0
+    # explicit re-run is idempotent: everything below already exists
+    assert stats.facts_written == 0
+    assert stats.skipped_existing > 0
 
     def value(metric: str) -> Decimal | None:
         f = session.scalar(
