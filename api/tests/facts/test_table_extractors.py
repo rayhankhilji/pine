@@ -1,19 +1,11 @@
 """Deterministic table extractors — synthetic tables + F-05.AC1 demo check."""
 
-import uuid
 from datetime import date
 from decimal import Decimal
-from pathlib import Path
 
-import pytest
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-import pine.index.jobs  # noqa: F401 — registers index_deal
-import pine.ingest.jobs  # noqa: F401 — registers parse/classify handlers
-from pine.api.schemas.deal import DealCreate
-from pine.config import get_settings
-from pine.demo.build import build_demo
 from pine.facts.extractors import run_extractors
 from pine.facts.extractors.bank_statement import BankStatementExtractor
 from pine.facts.extractors.base import TableGrid
@@ -21,12 +13,9 @@ from pine.facts.extractors.cap_table import CapTableExtractor
 from pine.facts.extractors.customer_list import CustomerListExtractor
 from pine.facts.extractors.pnl import PnlExtractor
 from pine.facts.store import EvidenceStore
-from pine.jobs.worker import _HANDLERS
 from pine.models.deal import Deal
 from pine.models.document import (
-    Blob,
     Cell,
-    DocStatus,
     DocType,
     Document,
     Page,
@@ -35,38 +24,18 @@ from pine.models.document import (
 from pine.models.entity import Entity, Relation
 from pine.models.evidence import Evidence
 from pine.models.fact import ExtractionMethod, Fact
-from pine.models.job import Job, JobKind, JobStatus
-from pine.repos import deals as deals_repo
-from pine.services.uploads import ingest_upload
-from pine.storage.blobstore import BlobStore
+
+from .conftest import mk_deal, mk_document
 
 
 def _deal(session: Session, name: str = "Acme Corp") -> Deal:
-    return deals_repo.create_deal(
-        session, DealCreate(name="D", company_name=name)
-    )
+    return mk_deal(session, name)
 
 
 def _doc(
     session: Session, deal: Deal, filename: str, doc_type: DocType
 ) -> Document:
-    blob = Blob(
-        sha256=uuid.uuid4().hex, size_bytes=1, mime="text/csv", path=filename
-    )
-    session.add(blob)
-    session.flush()
-    doc = Document(
-        deal_id=deal.id,
-        blob_id=blob.id,
-        filename=filename,
-        path=filename,
-        ext="csv",
-        status=DocStatus.parsed,
-        doc_type=doc_type,
-    )
-    session.add(doc)
-    session.flush()
-    return doc
+    return mk_document(session, deal, filename, doc_type)
 
 
 def _mk_table(
@@ -405,45 +374,7 @@ def test_extractors_do_not_cross_match(session: Session) -> None:
 
 
 # ----------------------------------------------------------------------
-# F-05.AC1 on the real demo room
-
-
-def _drain_jobs(session: Session, limit: int = 200) -> None:
-    for _ in range(limit):
-        job = session.scalar(
-            select(Job)
-            .where(Job.status == JobStatus.queued)
-            .order_by(Job.created_at)
-            .limit(1)
-        )
-        if job is None:
-            return
-        _HANDLERS[JobKind(job.kind)](session, job)
-        job.status = JobStatus.succeeded
-        session.commit()
-    raise AssertionError("job queue did not drain")
-
-
-@pytest.fixture
-def demo_deal(
-    session: Session, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> Deal:
-    storage = tmp_path / "storage"
-    monkeypatch.setenv("STORAGE_DIR", str(storage))
-    get_settings.cache_clear()
-    room = build_demo(tmp_path / "room")
-    deal = _deal(session, "Northwind")
-    store = BlobStore(storage)
-    files: list[tuple[str, bytes]] = []
-    paths: list[str] = []
-    for path in sorted(room.rglob("*")):
-        if not path.is_file() or path.name == "ground_truth.json":
-            continue
-        files.append((path.name, path.read_bytes()))
-        paths.append(path.relative_to(room).as_posix())
-    ingest_upload(session, store, deal, files, paths)
-    _drain_jobs(session)
-    return deal
+# F-05.AC1 on the real demo room (demo_deal fixture lives in conftest.py)
 
 
 def test_demo_room_f05_ac1(session: Session, demo_deal: Deal) -> None:
