@@ -10,9 +10,28 @@
 
 **Phase 2 — Retrieval: complete.** All P2 tasks done: `Chunk` model + structure-aware chunker (400/800/60 prose overlap, ≤25-row table groups with header repeat, slide/email kinds), HashEmbedder (256-d deterministic sha256) + OpenAIEmbedder (batch-100/retry/fallback), real `index_deal` job, index status (empty/indexing/stale/ready), hybrid BM25 + dense cosine with RRF(k=60) and hard filters, rerankers (none/llm/cross-encoder lazy), `POST /deals/{id}/search` + `POST|GET /deals/{id}/index`, web search page (query/k/doc-type chips, highlighted hits → document viewer deep links), index pill + Reindex on documents page, e2e spec. Live check: `POST /demo` → 39 chunks indexed (`ready`); `"annual recurring revenue"` returns `email_02.eml`, `MSA_Delta_Freight.pdf`, `02_Financials_FY2024_FY2025.xlsx` top-3. 145 api tests green; ruff + mypy strict clean; web lint + build clean; Playwright search spec green.
 
-**Next action: P3.T1** — see ROADMAP Phase 3.
+**Phase 3 — Facts & knowledge graph: in progress.** P3.T1 (Evidence/Entity/EntityAlias/Relation/Fact/FactLink models + migration `21768d57a624`, MetricId/Unit/PeriodType vocabularies) and P3.T2 (`EvidenceStore` — sole writer of Fact/Entity/Relation rows; quote substring validation `EvidenceInvalid`, `EvidenceRequired` invariants, evidence stubs + `link_evidence` copy-on-retarget, entity/alias and relation dedupe) done. 17 invariant tests green.
+
+**Next action: P3.T3** — see ROADMAP Phase 3.
 
 ## Current Phase Checklist
+
+Phase 3 — Facts & knowledge graph (F-04, F-05):
+
+- [x] P3.T1 — Models + migration `21768d57a624`; `pine/schemas/` vocabularies · tests/models/test_schema.py
+- [x] P3.T2 — `EvidenceStore` + invariants · tests/facts/test_invariants.py (17 tests)
+- [ ] P3.T3 — `pine/facts/periods.py` PeriodSpec parsing + comparability
+- [ ] P3.T4 — Table extractors (pnl, bank_statement, customer_list, cap_table)
+- [ ] P3.T5 — `pine/llm/` tools/StructuredResult/LLMCall + FakeLLM YAML scripts
+- [ ] P3.T6 — LLM prose extraction
+- [ ] P3.T7 — Derived facts
+- [ ] P3.T8 — `pine/graph/` resolve/extract/build/export
+- [ ] P3.T9 — Facts + graph endpoints
+- [ ] P3.T10 — Job chain extract_facts → build_graph → detect_contradictions
+- [ ] P3.T11 — Web facts page
+- [ ] P3.T12 — Web graph page
+- [ ] P3.T13 — `pine eval demo` / `pine eval evidence`
+
 
 Phase 0 — Foundation:
 
