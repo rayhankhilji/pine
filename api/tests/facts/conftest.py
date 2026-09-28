@@ -8,6 +8,9 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+import pine.contradictions.jobs  # noqa: F401 — registers detect_contradictions
+import pine.facts.jobs  # noqa: F401 — registers extract_facts
+import pine.graph.jobs  # noqa: F401 — registers build_graph
 import pine.index.jobs  # noqa: F401 — registers index_deal
 import pine.ingest.jobs  # noqa: F401 — registers parse/classify handlers
 from pine.api.schemas.deal import DealCreate
