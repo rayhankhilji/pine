@@ -25,6 +25,7 @@ from pine.facts.store import EvidenceStore
 from pine.models.entity import Entity, EntityAlias, Relation
 from pine.models.evidence import Evidence, EvidenceTarget
 from pine.models.fact import Fact
+from pine.schemas.entities import normalize_entity_name
 
 logger = logging.getLogger(__name__)
 
@@ -141,6 +142,82 @@ def merge_entities(store: EvidenceStore, into: Entity, other: Entity) -> Entity:
     return into
 
 
+class EntityNameConflict(ValueError):
+    """Split would collide with a live entity of the same type/name."""
+
+
+def split_entity(
+    store: EvidenceStore, entity: Entity, alias_ids: list[str]
+) -> Entity:
+    """Move `alias_ids` off `entity` onto a new same-type entity.
+
+    The new entity inherits the first alias as its canonical name and copies
+    evidence rows tied to the moved aliases' source documents (falling back
+    to the source entity's oldest evidence) so the ≥1-evidence invariant
+    holds. Facts and relations stay with the original entity.
+    """
+    session = store.session
+    aliases = {
+        a.id: a
+        for a in session.scalars(
+            select(EntityAlias).where(EntityAlias.id.in_(alias_ids))
+        ).all()
+    }
+    if set(aliases) != set(alias_ids):
+        raise ValueError("unknown alias id")
+    moved = [aliases[i] for i in alias_ids]
+    if any(a.entity_id != entity.id for a in moved):
+        raise ValueError("alias does not belong to entity")
+
+    canonical = moved[0].alias
+    normalized = normalize_entity_name(canonical)
+    clash = session.scalar(
+        select(Entity)
+        .where(Entity.deal_id == entity.deal_id)
+        .where(Entity.type == entity.type)
+        .where(Entity.normalized_name == normalized)
+        .where(Entity.merged_into_id.is_(None))
+    )
+    if clash is not None:
+        raise EntityNameConflict(
+            f"a live {entity.type} entity already has name {canonical!r}"
+        )
+
+    fresh = Entity(
+        deal_id=entity.deal_id,
+        type=entity.type,
+        canonical_name=canonical,
+        normalized_name=normalized,
+        attrs=dict(entity.attrs),
+        confidence=entity.confidence,
+    )
+    session.add(fresh)
+    session.flush()
+    for alias in moved:
+        alias.entity_id = fresh.id
+
+    # provenance: copy evidence from the moved aliases' source documents,
+    # else fall back to the source entity's oldest evidence row
+    doc_ids = {a.source_document_id for a in moved if a.source_document_id}
+    source_evidence = store.evidence_for(EvidenceTarget.entity, entity.id)
+    copied = [
+        ev
+        for ev in source_evidence
+        if doc_ids and ev.document_id in doc_ids
+    ]
+    for ev in copied or source_evidence[:1]:
+        store.link_evidence(ev, EvidenceTarget.entity, fresh.id)
+    session.flush()
+    logger.info(
+        "entity split deal=%s %r -> %r (%d aliases)",
+        store.deal_id,
+        entity.canonical_name,
+        fresh.canonical_name,
+        len(moved),
+    )
+    return fresh
+
+
 def resolve_entities(
     session: Session, deal_id: str, *, threshold: float = FUZZY_THRESHOLD
 ) -> ResolveStats:
@@ -207,7 +284,9 @@ def resolve_entities(
 
 __all__ = [
     "FUZZY_THRESHOLD",
+    "EntityNameConflict",
     "ResolveStats",
     "merge_entities",
     "resolve_entities",
+    "split_entity",
 ]
