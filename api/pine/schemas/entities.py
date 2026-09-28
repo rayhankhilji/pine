@@ -1,6 +1,34 @@
 """Entity and relation vocabularies for the knowledge graph (ARCHITECTURE §4, F-04)."""
 
+import re
+import unicodedata
 from enum import StrEnum
+
+_SUFFIXES = (
+    "inc",
+    "incorporated",
+    "llc",
+    "llp",
+    "corp",
+    "corporation",
+    "co",
+    "company",
+    "ltd",
+    "limited",
+    "gmbh",
+    "sas",
+    "plc",
+)
+_PUNCT_RE = re.compile(r"[^\w\s]")
+_WS_RE = re.compile(r"\s+")
+
+
+def normalize_entity_name(name: str) -> str:
+    """Canonical comparison key: lowercase, punctuation stripped, legal suffixes removed."""
+    text = unicodedata.normalize("NFKD", name).lower()
+    text = _PUNCT_RE.sub(" ", text)
+    tokens = [t for t in _WS_RE.split(text) if t and t not in _SUFFIXES]
+    return " ".join(tokens)
 
 
 class EntityType(StrEnum):
