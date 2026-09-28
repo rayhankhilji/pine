@@ -12,7 +12,9 @@
 
 **Phase 3 — Facts & knowledge graph: in progress.** P3.T1 (Evidence/Entity/EntityAlias/Relation/Fact/FactLink models + migration `21768d57a624`, MetricId/Unit/PeriodType vocabularies), P3.T2 (`EvidenceStore` — sole writer of Fact/Entity/Relation rows; quote substring validation `EvidenceInvalid`, `EvidenceRequired` invariants, evidence stubs + `link_evidence` copy-on-retarget, entity/alias and relation dedupe), P3.T3 (`pine/facts/periods.py` — PeriodSpec parsing for FY/quarter/month/TTM/as-of labels, fiscal-calendar-aware bounds via `deal.fiscal_year_end_month`, `comparable()` overlap rules, hypothesis round-trips), P3.T4 (deterministic table extractors: P&L/balance sheet, bank statement monthly+FY `bank_inflows` and closing `cash_balance` + `bank_account` entity, customer list → Customer entities + `has_customer` edges + aggregates, cap table → Shareholder/SecurityClass + `owns_shares` + `shares_outstanding`; ordered registry `run_extractors`; cell-level evidence on every fact), P3.T5 (`LLMCall` model + migration, recorded/hash-cached call wrapper, FakeLLM scripted YAML + deterministic extract fallback, OpenAILLM structured outputs, LLM extraction tests + shared `tests/facts/conftest.py` fixtures), P3.T6 (`pine/facts/llm_extract.py` — prose-chunk LLM extraction with verbatim `evidence_quote` substring check, `EVIDENCE_MISMATCH` rejection, dedupe), P3.T7 (`pine/facts/derive.py` — runway, gross margin, concentration, NRR as `derived` facts with `FactLink` lineage) and P3.T8 (`pine/graph/` — `resolve.py` alias-hit + fuzzy token_set ≥ 92 merges repointing facts/relations/evidence/aliases, `extract.py` contract counterparty + email person entities, `build.py` orchestrator, `export.py` JSON/GraphML) done. 7 graph tests green incl. F-04.AC1/AC2 demo-room checks.
 
-**Next action: P3.T9** — see ROADMAP Phase 3.
+P3.T9 (facts + graph/entity endpoints per ARCHITECTURE §5: `GET /deals/{id}/facts` with metric/period/source filters + cursor pagination + embedded evidence, `GET/PATCH /facts/{id}` with `derived_from` lineage, `GET /deals/{id}/graph` with `?types`/`?limit`/`?format=graphml`, `GET /entities/{id}` detail, `POST /entities/{id}/merge` 409-on-self + `/split` 201; `split_entity` service in `graph/resolve.py`) and P3.T10 (job chain: `index_deal` enqueues `extract_facts` keyed `facts:{deal}:{chunks}`; `extract_facts` runs extractors→LLM→derive and enqueues `build_graph`; `build_graph` enqueues a `detect_contradictions` stub; classify-pending deferral guard; all wired into worker/main imports) done. `demo_deal` fixture now drains the entire chain — facts/entities/graph exist after ingest; 18 api tests + 1 chain test green.
+
+**Next action: P3.T11** — see ROADMAP Phase 3.
 
 ## Current Phase Checklist
 
@@ -26,8 +28,8 @@ Phase 3 — Facts & knowledge graph (F-04, F-05):
 - [x] P3.T6 — LLM prose extraction
 - [x] P3.T7 — Derived facts
 - [x] P3.T8 — `pine/graph/` resolve/extract/build/export · tests/graph (7 tests)
-- [ ] P3.T9 — Facts + graph endpoints
-- [ ] P3.T10 — Job chain extract_facts → build_graph → detect_contradictions
+- [x] P3.T9 — Facts + graph endpoints · tests/api/test_facts.py (11), test_graph.py (7)
+- [x] P3.T10 — Job chain extract_facts → build_graph → detect_contradictions · tests/jobs/test_chain.py
 - [ ] P3.T11 — Web facts page
 - [ ] P3.T12 — Web graph page
 - [ ] P3.T13 — `pine eval demo` / `pine eval evidence`
