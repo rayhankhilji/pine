@@ -244,7 +244,7 @@ def test_add_fact_happy_path(
 ) -> None:
     entity = _mk_entity(store, env)
     fact = store.add_fact(
-        **{  # type: ignore[arg-type]
+        **{
             **_fact_kwargs(env, entity),
             "period_start": __import__("datetime").date(2025, 10, 1),
             "period_end": __import__("datetime").date(2025, 12, 31),

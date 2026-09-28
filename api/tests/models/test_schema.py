@@ -1,6 +1,8 @@
 """Schema coverage for the Phase-3 evidence/graph tables (ARCHITECTURE §4)."""
 
-from sqlalchemy import inspect
+from typing import cast
+
+from sqlalchemy import Table, inspect
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -13,8 +15,8 @@ from pine.schemas.metrics import MetricId
 from pine.schemas.units import PeriodType, Unit
 
 
-def _cols(model: type) -> set[str]:
-    return {c.name for c in model.__table__.columns}
+def _cols(model: type[Base]) -> set[str]:
+    return {c.name for c in inspect(model).columns}
 
 
 def test_metric_vocabulary_size() -> None:
@@ -160,7 +162,7 @@ def test_table_columns() -> None:
 def test_evidence_chunk_or_cell_check() -> None:
     checks = [
         c.sqltext.text
-        for c in Evidence.__table__.constraints
+        for c in cast(Table, Evidence.__table__).constraints
         if hasattr(c, "sqltext")
     ]
     assert any("chunk_id IS NOT NULL OR cell_id IS NOT NULL" in c for c in checks)
