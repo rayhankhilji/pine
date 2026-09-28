@@ -92,7 +92,6 @@ function StatusPill({ status, error }: { status: DocStatus; error: string | null
       return (
         <Tooltip>
           <TooltipTrigger
-            nativeButton={false}
             render={
               <Badge variant="destructive" className="gap-1" tabIndex={0}>
                 <AlertTriangle className="size-3" /> failed
