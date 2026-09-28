@@ -728,6 +728,140 @@
         }
       }
     },
+    "/api/v1/deals/{deal_id}/search": {
+      "post": {
+        "tags": [
+          "search"
+        ],
+        "summary": "Search",
+        "operationId": "search_api_v1_deals__deal_id__search_post",
+        "parameters": [
+          {
+            "name": "deal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Deal Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deals/{deal_id}/index": {
+      "post": {
+        "tags": [
+          "search"
+        ],
+        "summary": "Start Index",
+        "operationId": "start_index_api_v1_deals__deal_id__index_post",
+        "parameters": [
+          {
+            "name": "deal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Deal Id"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IndexResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "search"
+        ],
+        "summary": "Get Index Status",
+        "operationId": "get_index_status_api_v1_deals__deal_id__index_get",
+        "parameters": [
+          {
+            "name": "deal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Deal Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IndexStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/deals/{deal_id}/events": {
       "get": {
         "tags": [
@@ -1626,6 +1760,60 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
+      "IndexResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id"
+        ],
+        "title": "IndexResponse"
+      },
+      "IndexStatus": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "indexing",
+              "ready",
+              "stale",
+              "empty"
+            ],
+            "title": "Status"
+          },
+          "chunk_count": {
+            "type": "integer",
+            "title": "Chunk Count"
+          },
+          "embedded_count": {
+            "type": "integer",
+            "title": "Embedded Count"
+          },
+          "embedding_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Embedding Model"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "chunk_count",
+          "embedded_count",
+          "embedding_model"
+        ],
+        "title": "IndexStatus"
+      },
       "Job": {
         "properties": {
           "id": {
@@ -1855,6 +2043,190 @@
           "job_id"
         ],
         "title": "ReparseResponse"
+      },
+      "SearchFilters": {
+        "properties": {
+          "doc_types": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DocType"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Doc Types"
+          },
+          "document_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Document Ids"
+          },
+          "date_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date From"
+          },
+          "date_to": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date To"
+          }
+        },
+        "type": "object",
+        "title": "SearchFilters"
+      },
+      "SearchHit": {
+        "properties": {
+          "chunk_id": {
+            "type": "string",
+            "title": "Chunk Id"
+          },
+          "document_id": {
+            "type": "string",
+            "title": "Document Id"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "page_no": {
+            "type": "integer",
+            "title": "Page No"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "score": {
+            "type": "number",
+            "title": "Score"
+          },
+          "bm25_rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bm25 Rank"
+          },
+          "dense_rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dense Rank"
+          }
+        },
+        "type": "object",
+        "required": [
+          "chunk_id",
+          "document_id",
+          "filename",
+          "page_no",
+          "text",
+          "score",
+          "bm25_rank",
+          "dense_rank"
+        ],
+        "title": "SearchHit"
+      },
+      "SearchRequest": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Query"
+          },
+          "k": {
+            "type": "integer",
+            "maximum": 50.0,
+            "minimum": 1.0,
+            "title": "K",
+            "default": 10
+          },
+          "filters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SearchFilters"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rerank": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "llm",
+                  "cross-encoder"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rerank"
+          }
+        },
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "title": "SearchRequest"
+      },
+      "SearchResponse": {
+        "properties": {
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/SearchHit"
+            },
+            "type": "array",
+            "title": "Results"
+          }
+        },
+        "type": "object",
+        "required": [
+          "results"
+        ],
+        "title": "SearchResponse"
       },
       "SkippedFile": {
         "properties": {

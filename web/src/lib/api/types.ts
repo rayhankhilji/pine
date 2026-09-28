@@ -195,6 +195,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/deals/{deal_id}/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Search */
+        post: operations["search_api_v1_deals__deal_id__search_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/deals/{deal_id}/index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Index Status */
+        get: operations["get_index_status_api_v1_deals__deal_id__index_get"];
+        put?: never;
+        /** Start Index */
+        post: operations["start_index_api_v1_deals__deal_id__index_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/deals/{deal_id}/events": {
         parameters: {
             query?: never;
@@ -472,6 +507,25 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /** IndexResponse */
+        IndexResponse: {
+            /** Job Id */
+            job_id: string;
+        };
+        /** IndexStatus */
+        IndexStatus: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "indexing" | "ready" | "stale" | "empty";
+            /** Chunk Count */
+            chunk_count: number;
+            /** Embedded Count */
+            embedded_count: number;
+            /** Embedding Model */
+            embedding_model: string | null;
+        };
         /** Job */
         Job: {
             /** Id */
@@ -554,6 +608,54 @@ export interface components {
         ReparseResponse: {
             /** Job Id */
             job_id: string;
+        };
+        /** SearchFilters */
+        SearchFilters: {
+            /** Doc Types */
+            doc_types?: components["schemas"]["DocType"][] | null;
+            /** Document Ids */
+            document_ids?: string[] | null;
+            /** Date From */
+            date_from?: string | null;
+            /** Date To */
+            date_to?: string | null;
+        };
+        /** SearchHit */
+        SearchHit: {
+            /** Chunk Id */
+            chunk_id: string;
+            /** Document Id */
+            document_id: string;
+            /** Filename */
+            filename: string;
+            /** Page No */
+            page_no: number;
+            /** Text */
+            text: string;
+            /** Score */
+            score: number;
+            /** Bm25 Rank */
+            bm25_rank: number | null;
+            /** Dense Rank */
+            dense_rank: number | null;
+        };
+        /** SearchRequest */
+        SearchRequest: {
+            /** Query */
+            query: string;
+            /**
+             * K
+             * @default 10
+             */
+            k: number;
+            filters?: components["schemas"]["SearchFilters"] | null;
+            /** Rerank */
+            rerank?: ("none" | "llm" | "cross-encoder") | null;
+        };
+        /** SearchResponse */
+        SearchResponse: {
+            /** Results */
+            results: components["schemas"]["SearchHit"][];
         };
         /** SkippedFile */
         SkippedFile: {
@@ -1122,6 +1224,103 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Job"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    search_api_v1_deals__deal_id__search_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_index_status_api_v1_deals__deal_id__index_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexStatus"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    start_index_api_v1_deals__deal_id__index_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexResponse"];
                 };
             };
             /** @description Validation Error */
