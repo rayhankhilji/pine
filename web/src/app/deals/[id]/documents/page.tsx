@@ -34,27 +34,14 @@ import { useDealEvents } from "@/lib/api/events";
 import {
   useDocuments,
   useIndexStatus,
+  useReindex,
   useReparse,
   useUploadDocuments,
   type Document,
   type DocStatus,
-  type DocType,
 } from "@/lib/api/hooks";
+import { DOC_TYPE_LABELS } from "@/lib/doc-types";
 import { cn } from "@/lib/utils";
-
-const DOC_TYPE_LABELS: Record<DocType, string> = {
-  deck: "Deck",
-  financial_statement: "Financials",
-  bank_statement: "Bank stmt",
-  customer_list: "Customers",
-  contract: "Contract",
-  cap_table: "Cap table",
-  board_deck: "Board deck",
-  email: "Email",
-  legal: "Legal",
-  other: "Other",
-  unknown: "—",
-};
 
 const STATUS_FILTERS: { value: DocStatus | "all"; label: string }[] = [
   { value: "all", label: "All" },
@@ -111,14 +98,35 @@ function formatSize(doc: Document): string {
   return `${Math.max(1, Math.round(raw / 1024))} KB`;
 }
 
+const INDEX_LABELS: Record<string, string> = {
+  empty: "empty",
+  indexing: "indexing",
+  ready: "ready",
+  stale: "stale",
+};
+
 function IndexPill({ dealId }: { dealId: string }) {
   const index = useIndexStatus(dealId);
-  const label = index.data?.status ?? "not indexed";
+  const reindex = useReindex(dealId);
+  const status = index.data?.status ?? "empty";
+  const indexing = status === "indexing" || reindex.isPending;
   return (
-    <Badge variant="outline" className="font-mono text-xs" aria-live="polite">
-      index: {label}
-      {index.data ? ` (${index.data.embedded_count})` : ""}
-    </Badge>
+    <span className="flex items-center gap-2">
+      <Badge variant="outline" className="gap-1 font-mono text-xs" aria-live="polite">
+        {indexing && <Loader2 className="size-3 animate-spin" />}
+        index: {INDEX_LABELS[status] ?? status}
+        {index.data ? ` (${index.data.embedded_count})` : ""}
+      </Badge>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => reindex.mutate()}
+        disabled={indexing}
+      >
+        <RefreshCw className={cn("size-3.5", indexing && "animate-spin")} />
+        Reindex
+      </Button>
+    </span>
   );
 }
 
