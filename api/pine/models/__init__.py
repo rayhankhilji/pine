@@ -11,6 +11,9 @@ from pine.models.document import (
     Page,
     Table,
 )
+from pine.models.entity import Entity, EntityAlias, Relation
+from pine.models.evidence import Evidence, EvidenceTarget
+from pine.models.fact import ExtractionMethod, Fact, FactLink
 from pine.models.job import Job, JobKind, JobStatus
 
 __all__ = [
@@ -25,9 +28,17 @@ __all__ = [
     "DocStatus",
     "DocType",
     "Document",
+    "Entity",
+    "EntityAlias",
+    "Evidence",
+    "EvidenceTarget",
+    "ExtractionMethod",
+    "Fact",
+    "FactLink",
     "Job",
     "JobKind",
     "JobStatus",
     "Page",
+    "Relation",
     "Table",
 ]
