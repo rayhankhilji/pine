@@ -19,6 +19,12 @@ export type DocumentUpload = components["schemas"]["DocumentUpload"];
 export type SkippedFile = components["schemas"]["SkippedFile"];
 export type DemoResponse = components["schemas"]["DemoResponse"];
 export type ReparseResponse = components["schemas"]["ReparseResponse"];
+export type IndexStatus = components["schemas"]["IndexStatus"];
+export type IndexResponse = components["schemas"]["IndexResponse"];
+export type SearchHit = components["schemas"]["SearchHit"];
+export type SearchRequest = components["schemas"]["SearchRequest"];
+export type SearchFilters = components["schemas"]["SearchFilters"];
+export type SearchResponse = components["schemas"]["SearchResponse"];
 
 /** List endpoints return un-typed dicts; describe their wire shape here. */
 export type ListPage<T> = { items: T[]; next_cursor: string | null };
@@ -31,11 +37,6 @@ export type DealSummary = Deal & {
 
 export type DealList = ListPage<DealSummary>;
 export type DocumentList = ListPage<Document>;
-
-export type IndexStatus = {
-  status: "ready" | "stale" | "indexing" | "not_indexed";
-  embedded_count: number;
-};
 
 export function useHealth() {
   return useQuery({
@@ -129,13 +130,35 @@ export function useIndexStatus(dealId: string) {
         return await api.get<IndexStatus>(`/api/v1/deals/${dealId}/index`);
       } catch (error) {
         if (error instanceof ApiError && error.status === 404) {
-          return { status: "not_indexed", embedded_count: 0 };
+          return {
+            status: "empty",
+            chunk_count: 0,
+            embedded_count: 0,
+            embedding_model: null,
+          } satisfies IndexStatus;
         }
         throw error;
       }
     },
     enabled: Boolean(dealId),
     retry: false,
+  });
+}
+
+export function useReindex(dealId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () =>
+      api.post<IndexResponse>(`/api/v1/deals/${dealId}/index`),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["index", dealId] }),
+  });
+}
+
+export function useSearch(dealId: string) {
+  return useMutation({
+    mutationFn: (body: SearchRequest) =>
+      api.post<SearchResponse>(`/api/v1/deals/${dealId}/search`, body),
   });
 }
 

@@ -5,9 +5,10 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 
 import { API_URL } from "./client";
+import type { IndexStatus } from "./hooks";
 
 export type DocumentStatusEvent = { document_id: string; status: string };
-export type IndexStatusEvent = { status: string; embedded_count: number };
+export type IndexStatusEvent = IndexStatus;
 
 /**
  * Subscribe to the deal SSE stream. Document/index changes invalidate the
