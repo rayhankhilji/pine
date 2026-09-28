@@ -36,7 +36,12 @@ function docTypeLabel(doc: DocumentDetail): string {
 function Header({ doc }: { doc: DocumentDetail }) {
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <Button variant="ghost" size="sm" render={<Link href={`/deals/${doc.deal_id}/documents`} />}>
+      <Button
+        variant="ghost"
+        size="sm"
+        nativeButton={false}
+        render={<Link href={`/deals/${doc.deal_id}/documents`} />}
+      >
         <ArrowLeft className="size-4" /> Documents
       </Button>
       <h2 className="text-lg font-medium tracking-tight">{doc.filename}</h2>
@@ -52,15 +57,17 @@ function Header({ doc }: { doc: DocumentDetail }) {
       {doc.status === "failed" && doc.error && (
         <span className="text-xs text-destructive">{doc.error}</span>
       )}
-      <a
-        href={`${API_URL}/api/v1/documents/${doc.id}/file`}
+      <Button
+        variant="secondary"
+        size="sm"
         className="ml-auto"
-        download
+        nativeButton={false}
+        render={
+          <a href={`${API_URL}/api/v1/documents/${doc.id}/file`} download />
+        }
       >
-        <Button variant="secondary" size="sm">
-          <Download className="size-4" /> Original
-        </Button>
-      </a>
+        <Download className="size-4" /> Original
+      </Button>
     </div>
   );
 }
