@@ -6,9 +6,9 @@
 
 **Phase 0 — Foundation: complete.** All P0 tasks done. API has health, API-key auth (`compare_digest`), error envelope, request-id + JSON logging, Alembic migrations (deal, job), a polling job worker with retries/idempotency, and deals CRUD with cursor pagination. Web has the design-token theme (light+dark), deal shell nav, placeholder routes with loading/error states, and a working deals home (list + create). OpenAPI codegen (`make generate`) feeds `web/src/lib/api/types.ts`, drift-checked in CI.
 
-**Phase 1 — Ingestion: in progress.** P1.T1–T12 done: `Blob/Document/Page/Block/Table/Cell` models + migration, `BlobStore`, signature detection (`ingest/detect.py`), `ParseResult` dataclasses, all parsers (PDF + pdfplumber tables + scan detection, XLSX/CSV/TSV typed columns, DOCX/PPTX, EML with attachments, TXT/MD, image), tesseract OCR helpers (graceful skip), parser registry + `persist_result` (pages/blocks/tables/cells + child docs for attachments), rule-based classifier, and `parse_document`/`classify_document`/`index_deal`-stub job handlers wired into the app and `pine worker`. 66 tests green; ruff + mypy strict clean.
+**Phase 1 — Ingestion: complete.** All P1 tasks done: full upload/document/table/job/SSE API surface (ARCHITECTURE §5), deterministic Northwind demo room + `POST /demo` (202, 409 on concurrent ingest), web home "Load demo" → documents page (dropzone, zip expansion, status pills, unreadable group, live SSE) and document viewer (rendered pages, thumbnails, text panel, spreadsheet tables, `?page=` deep links). Live check: `POST /api/v1/demo` ingested 19 documents → all `parsed` in ~5 s; 19 parse + 19 classify + 1 index job succeeded. 99 api tests green; ruff + mypy strict clean; web lint + build clean; Playwright e2e specs + CI `e2e` job added.
 
-**Next action: P1.T13** — documents/tables/jobs API endpoints + deal SSE events (ARCHITECTURE §5).
+**Next action: P2.T1** — `Chunk` model + migration; structure-aware chunker (ARCHITECTURE §6, F-03.AC4).
 
 ## Current Phase Checklist
 
@@ -28,13 +28,14 @@ Phase 0 — Foundation:
 
 ## Up Next
 
-Phase 1 — Ingestion & document intelligence (P1.T1–T12 done):
-- P1.T13 — Endpoints: documents list/detail/pages/render/file/reparse, tables detail, jobs, deal SSE events
-- P1.T14 — Demo room generator `pine demo build` → `fixtures/northwind/` + `ground_truth.json`
-- P1.T15 — `POST /demo` service
-- P1.T16 — Web: deals home "Load demo" button
-- P1.T17 — Web: documents page (dropzone, table, unreadable group, SSE)
-- P1.T18 — Web: document viewer
+Phase 2 — Retrieval (F-03):
+- P2.T1 — `Chunk` model + migration; structure-aware chunker
+- P2.T2 — `Embedder` protocol, `HashEmbedder`, `OpenAIEmbedder`
+- P2.T3 — `index_deal` job: chunk + embed; index status lifecycle
+- P2.T4 — BM25 + dense search, RRF fusion, filters
+- P2.T5 — Rerankers (none/llm/cross-encoder)
+- P2.T6 — `POST /deals/{id}/search`, `POST/GET /deals/{id}/index` endpoints
+- P2.T7 — Web: search page + index status/reindex on documents page
 
 ## Blockers
 
@@ -52,6 +53,10 @@ None.
 | 2026-09-23 | Worker: sync handlers run via `asyncio.to_thread` inside `wait_for(timeout)`; `run_once()` drives tests without sleeps | per ARCHITECTURE §9 timeouts table |
 | 2026-09-23 | `web/openapi.json` committed alongside generated `types.ts` | drift check regenerates both deterministically |
 | 2026-09-23 | mypy `follow_imports = "skip"` for `pymupdf` | package ships `py.typed` but wraps the compiled `_mupdf` module — partial typing produced false-positive strict errors on every call; module is now `Any` |
+| 2026-09-28 | SQLite: WAL + `busy_timeout=30s` + `check_same_thread=False`; no `BEGIN IMMEDIATE` | deferred-write upgrades (`SQLITE_BUSY_SNAPSHOT`) are rare and jobs self-retry; `BEGIN IMMEDIATE` serialized *all* txns (including reads) and starved the `to_thread` pool — tested and reverted |
+| 2026-09-28 | Worker DB calls run via `asyncio.to_thread`; `parse_document` parses outside the DB txn | sync sqlite busy-waits on the event loop wedged the whole server; long parses must not hold write locks |
+| 2026-09-28 | Demo fixtures are content-stable, not byte-identical | office/PDF/EML writers embed random MIME boundaries and binary metadata; seeded RNG fixes all extracted text/tables |
+| 2026-09-28 | Playwright e2e runs `workers: 1` | all tests share one SQLite file; parallel writers contend |
 
 ## Session Log
 
@@ -72,6 +77,16 @@ None.
 - Committed all outstanding P1.T1–T12 work in small commits; fixed ruff/mypy strict issues (pymupdf module skip, bytes prefix sniffing, typed test fixtures).
 - 66 api tests green, ruff + mypy strict clean.
 
+### 2026-09-28 — Session 4
+- P1.T13: upload endpoint (zip expansion, traversal/bomb guards, sha256 dedupe, `__MACOSX`/dotfile skip), document list/detail/page/render/file/reparse, table detail, job detail, deal SSE (real-Uvicorn test — TestClient buffers infinite streams).
+- P1.T14: `pine demo build` — Northwind room (19 files, ~152 KB) + `ground_truth.json`; PyMuPDF-only PDFs; committed fixtures.
+- P1.T15: `POST /demo` — builds fixtures under `STORAGE_DIR/demo`, creates Northwind Series B deal, ingests with preserved paths; 409 while another demo ingest runs.
+- P1.T16–T18: web demo button, documents page (react-dropzone, upload progress, status pills, unreadable group, SSE invalidation + toasts, index pill placeholder), document viewer (render rail/canvas/text panel, spreadsheet table view, `?page=` links, download).
+- Playwright e2e: config boots migrated API + dev server; specs for deals/documents/viewer; CI `e2e` job.
+- Concurrency fixes found via e2e: WAL + busy_timeout + `check_same_thread=False`; worker polls moved off the event loop; parse jobs hold no write lock while parsing; periodic stale-lock requeue.
+- Final: 99 api tests green, ruff/mypy clean, web lint+build clean; live `POST /demo` → 19 docs all `parsed`, all jobs succeeded.
+
 ## Completed Phases
 
 - **Phase 0 — Foundation** (2026-09-23): monorepo, API skeleton, DB + migrations, job worker, error envelope, API-key auth, web shell, CI. All exit criteria met.
+- **Phase 1 — Ingestion & document intelligence** (2026-09-28): full upload→parse→classify pipeline, document APIs + SSE, demo room + `POST /demo`, documents UI + viewer, e2e harness. Exit criteria met: demo room loads via UI, all files reach `parsed`.
