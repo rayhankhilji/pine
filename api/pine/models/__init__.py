@@ -1,3 +1,4 @@
+from pine.models.chunk import Chunk, ChunkKind
 from pine.models.deal import Deal, DealStage
 from pine.models.document import (
     Blob,
@@ -17,6 +18,8 @@ __all__ = [
     "Block",
     "BlockKind",
     "Cell",
+    "Chunk",
+    "ChunkKind",
     "Deal",
     "DealStage",
     "DocStatus",
