@@ -1,7 +1,10 @@
-import { SectionPlaceholder } from "@/components/placeholder";
+"use client";
+
+import { useParams } from "next/navigation";
+
+import { GraphView } from "@/components/graph/graph-view";
 
 export default function Page() {
-  return (
-    <SectionPlaceholder title="Graph" description="The entity graph appears here once built." />
-  );
+  const { id } = useParams<{ id: string }>();
+  return <GraphView dealId={id} />;
 }

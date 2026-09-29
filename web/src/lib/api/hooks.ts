@@ -304,13 +304,13 @@ export function useEntity(entityId: string | null) {
   });
 }
 
-export function useDealGraph(dealId: string, types: EntityType[] = []) {
+export function useGraph(dealId: string, types: EntityType[] = []) {
   const sorted = [...types].sort();
   return useQuery<GraphResponse>({
     queryKey: ["graph", dealId, sorted],
     queryFn: () => {
       const params = new URLSearchParams();
-      params.set("limit", "1000");
+      params.set("limit", "2000");
       if (sorted.length) params.set("types", sorted.join(","));
       return api.get<GraphResponse>(
         `/api/v1/deals/${dealId}/graph?${params.toString()}`,
