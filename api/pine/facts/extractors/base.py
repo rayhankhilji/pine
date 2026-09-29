@@ -234,13 +234,33 @@ def ensure_company(store: EvidenceStore, deal: Deal) -> Entity:
         .where(Entity.merged_into_id.is_(None))
     )
     if existing is not None:
+        _deal_title_alias(store, existing, deal)
         return existing
     spec = _company_evidence(store, deal.company_name)
-    return store.add_entity(
+    entity = store.add_entity(
         type=EntityType.company,
         canonical_name=deal.company_name,
         evidence=[spec],
     )
+    _deal_title_alias(store, entity, deal)
+    return entity
+
+
+def _deal_title_alias(store: EvidenceStore, entity: Entity, deal: Deal) -> None:
+    """Record the deal title's head ("<Company> — Series B") as an alias.
+
+    Analysts name deals "<company-ish> — <round>"; when the head extends the
+    company's first token ("Northwind" → "Northwind SaaS") it is a surface
+    form of the company worth resolving on. Aliases carry no evidence
+    requirement — they are observed labels, not asserted facts.
+    """
+    head = re.split(r"\s+[—–-]\s+", deal.name, maxsplit=1)[0].strip()
+    norm = normalize_entity_name(head)
+    if len(norm.split()) < 2 or norm == entity.normalized_name:
+        return
+    first = entity.normalized_name.split()[0] if entity.normalized_name else ""
+    if first and norm.split()[0] == first:
+        store.add_alias(entity, head)
 
 
 def _company_evidence(store: EvidenceStore, name: str) -> EvidenceSpec:
