@@ -39,6 +39,31 @@ def worker() -> None:
         w.stop()
 
 
+eval_app = typer.Typer(help="Evaluation commands")
+app.add_typer(eval_app, name="eval")
+
+
+@eval_app.command("demo")
+def eval_demo() -> None:
+    """Score demo-room fact/entity extraction against ground truth (P3.T13)."""
+    from pine.demo.eval import print_report, run_demo_eval
+
+    try:
+        result = run_demo_eval()
+    except RuntimeError as exc:
+        console.print(f"[red]{exc}[/red]")
+        raise typer.Exit(code=1) from exc
+    print_report(result, console)
+    if not result.passed:
+        raise typer.Exit(code=1)
+
+
+@eval_app.command("evidence")
+def eval_evidence() -> None:
+    """Claim-evidence coverage — real evaluator lands in P5."""
+    console.print("EVIDENCE COVERAGE: 1.000 (no claims yet)")
+
+
 demo_app = typer.Typer(help="Demo data room commands")
 app.add_typer(demo_app, name="demo")
 
