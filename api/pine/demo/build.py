@@ -5,6 +5,7 @@
 stable across runs.
 """
 
+import calendar
 import csv
 import io
 import json
@@ -244,6 +245,7 @@ def _bank_statement_csv() -> bytes:
     debits[-1] += 3_700_000 - sum(debits)
 
     buf = io.StringIO()
+    buf.write("Northwind Operating Account\n")
     buf.write("ACCT 4839201156\n")
     writer = csv.writer(buf, lineterminator="\n")
     writer.writerow(["date", "description", "debit", "credit", "balance"])
@@ -257,8 +259,15 @@ def _bank_statement_csv() -> bytes:
             [f"2025-{month:02d}-15", "Customer receipts", "", credit, balance]
         )
         balance -= debit
+        last_day = calendar.monthrange(2025, month)[1]
         writer.writerow(
-            [f"2025-{month:02d}-28", "Operating disbursements", debit, "", balance]
+            [
+                f"2025-{month:02d}-{last_day:02d}",
+                "Operating disbursements",
+                debit,
+                "",
+                balance,
+            ]
         )
     assert balance == 6_200_000
     return buf.getvalue().encode()

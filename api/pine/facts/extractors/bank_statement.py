@@ -33,7 +33,12 @@ from pine.facts.periods import (
 from pine.facts.store import EvidenceSpec, EvidenceStore, whitespace_normalize
 from pine.models.deal import Deal
 from pine.models.document import DocType, Document
-from pine.schemas.entities import EntityType, RelationType
+from pine.models.entity import Entity
+from pine.schemas.entities import (
+    EntityType,
+    RelationType,
+    normalize_entity_name,
+)
 from pine.schemas.metrics import MetricId
 from pine.schemas.units import PeriodType, Unit
 
@@ -270,13 +275,21 @@ class BankStatementExtractor:
         header_row: int,
         company_id: str,
     ) -> str | None:
-        """Create a bank_account entity when a pre-header row names the account."""
+        """Create a bank_account entity from pre-header account cells.
+
+        A statement header block may stack several descriptors of the same
+        account ("Northwind Operating Account" / "ACCT 4839201156"): the first
+        becomes the canonical name, the rest are aliases on that entity.
+        """
+        entity: Entity | None = None
         for row in grid.row_ids:
             if row >= header_row:
                 break
             for cell in grid.row_cells(row):
                 text = whitespace_normalize(cell.text)
-                if text and _ACCOUNT_RE.search(text):
+                if not text or not _ACCOUNT_RE.search(text):
+                    continue
+                if entity is None:
                     entity = store.add_entity(
                         type=EntityType.bank_account,
                         canonical_name=text[:120],
@@ -290,5 +303,8 @@ class BankStatementExtractor:
                         target_entity_id=entity.id,
                         evidence=[evidence_for_cell(grid, document, cell)],
                     )
-                    return entity.id
-        return None
+                elif normalize_entity_name(text) != entity.normalized_name:
+                    store.add_alias(
+                        entity, text[:120], source_document_id=document.id
+                    )
+        return entity.id if entity is not None else None

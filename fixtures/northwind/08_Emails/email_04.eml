@@ -3,9 +3,9 @@ To: analyst@fund.example
 Date: Wed, 14 Jan 2026 09:00:00 -0000
 Subject: FY2025 financial summary
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3054986475237325000=="
+Content-Type: multipart/mixed; boundary="===============0495513993339569738=="
 
---===============3054986475237325000==
+--===============0495513993339569738==
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
@@ -13,7 +13,7 @@ Attached is a one-page summary of the FY2025 financials.
 
 CFO
 
---===============3054986475237325000==
+--===============0495513993339569738==
 Content-Type: application/pdf
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="Northwind_FY2025_Summary.pdf"
@@ -43,7 +43,7 @@ NSBmIAowMDAwMDAwMDQyIDAwMDAwIG4gCjAwMDAwMDAxMjAgMDAwMDAgbiAKMDAwMDAwMDE3MiAw
 MDAwMCBuIAowMDAwMDAwMjEzIDAwMDAwIG4gCjAwMDAwMDAzMzIgMDAwMDAgbiAKMDAwMDAwMDQy
 MSAwMDAwMCBuIAowMDAwMDAwNTkyIDAwMDAwIG4gCjAwMDAwMDA3OTQgMDAwMDAgbiAKMDAwMDAw
 MDk3MSAwMDAwMCBuIAoKdHJhaWxlcgo8PC9TaXplIDEwL0luZm8gOSAwIFIvUm9vdCAxIDAgUi9J
-RFs8NjNDMzgxQzNCRTc0QzJCNjU4QzNCQTMwQzI4N0MzOUM+PDFCN0YxMEI3ODlENjA4RDQ4MDJF
-MEJDNDM0RDkwNTcyPl0+PgpzdGFydHhyZWYKMTExNQolJUVPRgo=
+RFs8MEQyM0MyQjhDMkE2MDBDMzlBNTRDMjgyNzE3RTcwQzM+PDQ1NjE0QTY5NTNEOEUyQTZFQTUw
+ODVCNjNFMUIxRjg0Pl0+PgpzdGFydHhyZWYKMTExNQolJUVPRgo=
 
---===============3054986475237325000==--
+--===============0495513993339569738==--

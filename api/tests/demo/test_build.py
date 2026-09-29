@@ -75,8 +75,8 @@ def test_customer_list_sums(room: Path) -> None:
 
 def test_bank_statement(room: Path) -> None:
     text = (room / "04_Bank_Statement_2025.csv").read_text()
-    assert text.startswith("ACCT 4839201156\n")
-    rows = list(csv.DictReader(io.StringIO(text.split("\n", 1)[1])))
+    assert text.startswith("Northwind Operating Account\nACCT 4839201156\n")
+    rows = list(csv.DictReader(io.StringIO(text.split("\n", 2)[2])))
     credits = sum(int(r["credit"]) for r in rows if r["credit"])
     assert credits == 9_900_000
     assert int(rows[-1]["balance"]) == 6_200_000
